@@ -45,7 +45,7 @@ compileSdk 37, targetSdk 36, minSdk 31 (Android 12), all in `build-logic` (`Conf
 
 ## Releasing
 
-Pushing a tag `vX.Y.Z` builds signed per-ABI APKs and publishes a GitHub Release. The signing key lives only in repo secrets (`GEET_KEYSTORE_BASE64`, `GEET_KEYSTORE_PASSWORD`, `GEET_KEY_ALIAS`, `GEET_KEY_PASSWORD`); locally an untracked `keystore.properties` does the same, pointing at the key in `~/.config/geet-android/geet-release.jks` (certificate SHA-256 `AD:4C:34:BE:…:3B:12`). **Losing the key means users can't update in place.** Back it up.
+Pushing a tag `vX.Y.Z` builds signed per-ABI APKs and publishes a GitHub Release; a tag with a suffix (`v0.1.0-beta.1`) publishes a pre-release. The signing key lives only in repo secrets (`GEET_KEYSTORE_BASE64`, `GEET_KEYSTORE_PASSWORD`, `GEET_KEY_ALIAS`, `GEET_KEY_PASSWORD`); locally an untracked `keystore.properties` does the same, pointing at the key in `~/.config/geet-android/geet-release.jks` (certificate SHA-256 `AD:4C:34:BE:…:3B:12`). **Losing the key means users can't update in place.** Back it up.
 
 ## Agent skills
 

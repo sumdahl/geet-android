@@ -81,7 +81,7 @@ class Engine @Inject constructor(@ApplicationContext private val context: Contex
             "PYTHONHOME" to python,
             "HOME" to python,
             "TMPDIR" to cache,
-            "PATH" to System.getenv("PATH") + ":" + nativeDir.absolutePath,
+            "PATH" to System.getenv("PATH").orEmpty() + ":" + nativeDir.absolutePath,
             "XDG_CACHE_HOME" to cache,
             "XDG_DATA_HOME" to File(context.filesDir, "data").absolutePath,
             "GEET_CONFIG" to File(context.filesDir, "config.toml").absolutePath,
