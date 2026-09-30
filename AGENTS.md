@@ -8,7 +8,7 @@ The whole app, every screen and every flow, must feel like a Pixel app: Material
 
 ## Development
 
-The toolchain is JDK 17 (Robolectric tests run on 21 through a Gradle toolchain), the Android SDK at `~/Android/Sdk` (`local.properties`, untracked) and an NDK for the engine. The engine is built from a geet checkout beside this repo (`../geet`), or from `-PgeetEngineDir=…`.
+The toolchain is JDK 17 (Robolectric tests run on 21 through a Gradle toolchain), Go, the Android SDK at `~/Android/Sdk` (`local.properties`, untracked) and an NDK for the engine. The engine is built from a geet checkout beside this repo (`../geet`), or from `-PgeetEngineDir=…`. CI and releases build the geet commit pinned in `engine.version`; bump it (after the geet PR merges) when the app needs a newer engine.
 
 ```bash
 ./gradlew assembleDebug                                  # build (also builds the engine)
@@ -41,7 +41,7 @@ compileSdk 37, targetSdk 36, minSdk 31 (Android 12), all in `build-logic` (`Conf
 
 ## Releasing
 
-Pushing a tag `vX.Y.Z` builds signed per-ABI APKs and publishes a GitHub Release. The signing key lives only in repo secrets (`GEET_KEYSTORE_BASE64`, `GEET_KEYSTORE_PASSWORD`, `GEET_KEY_ALIAS`, `GEET_KEY_PASSWORD`); locally an untracked `keystore.properties` does the same. **Losing the key means users can't update in place.** Back it up.
+Pushing a tag `vX.Y.Z` builds signed per-ABI APKs and publishes a GitHub Release. The signing key lives only in repo secrets (`GEET_KEYSTORE_BASE64`, `GEET_KEYSTORE_PASSWORD`, `GEET_KEY_ALIAS`, `GEET_KEY_PASSWORD`); locally an untracked `keystore.properties` does the same, pointing at the key in `~/.config/geet-android/geet-release.jks` (certificate SHA-256 `AD:4C:34:BE:…:3B:12`). **Losing the key means users can't update in place.** Back it up.
 
 ## Agent skills
 

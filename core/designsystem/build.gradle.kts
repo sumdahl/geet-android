@@ -9,4 +9,5 @@ android { namespace = "dev.sumdahl.geet.designsystem" }
 dependencies {
     api(libs.coil.compose)
     api(libs.material.kolor)
+    implementation(libs.androidx.core.ktx)
 }

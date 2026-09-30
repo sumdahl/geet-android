@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      # Any Gradle step may build the engine, so every one gets the runner's newest NDK.
+      - name: Use the newest NDK
+        run: echo "ANDROID_NDK_HOME=$ANDROID_NDK_LATEST_HOME" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v5
+
+      # The engine is the geet CLI at the commit pinned in engine.version, built for Android with the runner's NDK.
+      - name: Read the engine version
+        id: engine
+        run: echo "ref=$(cat engine.version)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v5
+        with:
+          repository: sumdahl/geet
+          ref: ${{ steps.engine.outputs.ref }}
+          path: geet-engine
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: geet-engine/go.mod
+          cache-dependency-path: geet-engine/go.sum
+
+      # 17 builds the app; 21 runs Robolectric/Roborazzi tests (Gradle toolchains pick it up).
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: |
+            21
+            17
+
+      - uses: gradle/actions/setup-gradle@v5
+
+      - name: Static checks
+        run: ./gradlew lint ktlintCheck detekt -PgeetEngineDir="$GITHUB_WORKSPACE/geet-engine"
+
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest -PgeetEngineDir="$GITHUB_WORKSPACE/geet-engine"
+
+      - name: Build debug APKs (engine included)
+        run: ./gradlew assembleDebug -PgeetEngineDir="$GITHUB_WORKSPACE/geet-engine"
+
+      - name: Check the engine is inside
+        run: unzip -l app/build/outputs/apk/debug/app-arm64-v8a-debug.apk | grep -q 'lib/arm64-v8a/libgeet.so'
