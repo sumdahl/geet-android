@@ -1,0 +1,5 @@
+{"track":"","stage":"reading","step":"spotify","index":3,"total":50}
+{"track":"Kevin MacLeod, Kevin - Monkeys Spinning Monkeys","stage":"resolved","spotify_id":"3XtbtOMVVBooqbcGz8UErp","index":1,"total":1,"youtube_url":"https://www.youtube.com/watch?v=2eZVbrO6Z1M","path":"/music/Monkeys Spinning Monkeys - Kevin MacLeod, Kevin.opus"}
+{"track":"Kevin MacLeod, Kevin - Monkeys Spinning Monkeys","stage":"downloading","spotify_id":"3XtbtOMVVBooqbcGz8UErp","index":1,"total":1,"progress":0.4,"some_future_field":{"x":1}}
+{"track":"Kevin MacLeod, Kevin - Monkeys Spinning Monkeys","stage":"done","spotify_id":"3XtbtOMVVBooqbcGz8UErp","index":1,"total":1,"path":"/music/Monkeys Spinning Monkeys - Kevin MacLeod, Kevin.opus","lyrics_path":"/music/Monkeys Spinning Monkeys - Kevin MacLeod, Kevin.lrc"}
+{"track":"","stage":"failed","error":"YouTube wants you to confirm you're not a bot","fatal":true}

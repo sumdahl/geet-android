@@ -1,0 +1,518 @@
+[
+  {
+    "key": "output",
+    "flag": "--output",
+    "env": "GEET_OUTPUT",
+    "type": "string",
+    "default": "~/Music",
+    "value": "/home/you/Music",
+    "secret": false,
+    "usage": "music library directory"
+  },
+  {
+    "key": "output_template",
+    "flag": "--output-template",
+    "env": "GEET_OUTPUT_TEMPLATE",
+    "type": "string",
+    "default": "{title} - {artists}",
+    "value": "{title} - {artists}",
+    "secret": false,
+    "usage": "file path under output, without extension; placeholders: {title} {artist} {artists} {album} {album_artist} {track} {disc} {year} {isrc} {spotify_id}"
+  },
+  {
+    "key": "lyrics",
+    "flag": "--lyrics",
+    "env": "GEET_LYRICS",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "save each song's lyrics (synced when available, from LRCLIB) in its tags and a .lrc file next to it"
+  },
+  {
+    "key": "playlist_folder",
+    "flag": "--playlist-folder",
+    "env": "GEET_PLAYLIST_FOLDER",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "put a playlist's tracks in a folder named after it, inside output"
+  },
+  {
+    "key": "playlist_folder_case",
+    "flag": "--playlist-folder-case",
+    "env": "GEET_PLAYLIST_FOLDER_CASE",
+    "type": "string",
+    "default": "lower",
+    "value": "lower",
+    "secret": false,
+    "usage": "playlist folder letter case: lower (road-trip-mix), capitalize (Road-trip-mix) or title (Road-Trip-Mix)",
+    "choices": [
+      "lower",
+      "capitalize",
+      "title"
+    ]
+  },
+  {
+    "key": "format",
+    "flag": "--format",
+    "env": "GEET_FORMAT",
+    "type": "string",
+    "default": "opus",
+    "value": "opus",
+    "secret": false,
+    "usage": "audio format: opus, flac or mp3",
+    "choices": [
+      "opus",
+      "flac",
+      "mp3"
+    ]
+  },
+  {
+    "key": "bitrate",
+    "flag": "--bitrate",
+    "env": "GEET_BITRATE",
+    "type": "string",
+    "default": "",
+    "value": "",
+    "secret": false,
+    "usage": "audio bitrate such as 320k; empty means best available"
+  },
+  {
+    "key": "overwrite",
+    "flag": "--overwrite",
+    "env": "GEET_OVERWRITE",
+    "type": "bool",
+    "default": "false",
+    "value": "false",
+    "secret": false,
+    "usage": "re-download tracks whose file already exists instead of skipping them"
+  },
+  {
+    "key": "duplicates",
+    "flag": "--duplicates",
+    "env": "GEET_DUPLICATES",
+    "type": "string",
+    "default": "link",
+    "value": "link",
+    "secret": false,
+    "usage": "a track already downloaded elsewhere (another playlist, or the same recording on another release): link (hard link, no extra space), copy, skip, or download again",
+    "choices": [
+      "link",
+      "copy",
+      "skip",
+      "download"
+    ]
+  },
+  {
+    "key": "index_path",
+    "flag": "--index-path",
+    "env": "GEET_INDEX_PATH",
+    "type": "string",
+    "default": "",
+    "value": "/home/you/.local/share/geet/index.json",
+    "secret": false,
+    "usage": "file remembering every downloaded track, for duplicates (default $XDG_DATA_HOME/geet/index.json)"
+  },
+  {
+    "key": "progress",
+    "flag": "--progress",
+    "env": "GEET_PROGRESS",
+    "type": "string",
+    "default": "auto",
+    "value": "auto",
+    "secret": false,
+    "usage": "animated progress bars: auto (only in a terminal, and not with --json), always or never",
+    "choices": [
+      "auto",
+      "always",
+      "never"
+    ]
+  },
+  {
+    "key": "download_retries",
+    "flag": "--download-retries",
+    "env": "GEET_DOWNLOAD_RETRIES",
+    "type": "int",
+    "default": "2",
+    "value": "2",
+    "secret": false,
+    "usage": "extra attempts when a YouTube download fails (it is often a temporary 403 or throttling)"
+  },
+  {
+    "key": "jobs",
+    "flag": "--jobs",
+    "env": "GEET_JOBS",
+    "type": "int",
+    "default": "4",
+    "value": "4",
+    "secret": false,
+    "usage": "concurrent downloads"
+  },
+  {
+    "key": "resolve_jobs",
+    "flag": "--resolve-jobs",
+    "env": "GEET_RESOLVE_JOBS",
+    "type": "int",
+    "default": "8",
+    "value": "8",
+    "secret": false,
+    "usage": "songs read from Spotify and looked up on YouTube at once; higher reads big playlists faster but makes Spotify rate-limit sooner"
+  },
+  {
+    "key": "spotify.client_id",
+    "flag": "--spotify-client-id",
+    "env": "GEET_SPOTIFY_CLIENT_ID",
+    "type": "string",
+    "default": "",
+    "value": "",
+    "secret": false,
+    "usage": "Spotify Web API client ID (optional; needs Premium)"
+  },
+  {
+    "key": "spotify.client_secret",
+    "flag": "--spotify-client-secret",
+    "env": "GEET_SPOTIFY_CLIENT_SECRET",
+    "type": "string",
+    "default": "",
+    "value": "",
+    "secret": true,
+    "usage": "Spotify Web API client secret"
+  },
+  {
+    "key": "spotify.cache_days",
+    "flag": "--spotify-cache-days",
+    "env": "GEET_SPOTIFY_CACHE_DAYS",
+    "type": "int",
+    "default": "30",
+    "value": "30",
+    "secret": false,
+    "usage": "days to remember songs read from Spotify's public pages, so reading a playlist again skips them; 0 turns the cache off"
+  },
+  {
+    "key": "youtube.search_query",
+    "flag": "--youtube-search-query",
+    "env": "GEET_YOUTUBE_SEARCH_QUERY",
+    "type": "string",
+    "default": "{artists} - {title}",
+    "value": "{artists} - {title}",
+    "secret": false,
+    "usage": "YouTube search text; placeholders: {artists} {artist} {title} {album}"
+  },
+  {
+    "key": "youtube.fallback_query",
+    "flag": "--youtube-fallback-query",
+    "env": "GEET_YOUTUBE_FALLBACK_QUERY",
+    "type": "string",
+    "default": "{artists} - {title} audio",
+    "value": "{artists} - {title} audio",
+    "secret": false,
+    "usage": "second search when nothing from search_query matches (same placeholders); empty disables"
+  },
+  {
+    "key": "youtube.search_results",
+    "flag": "--youtube-search-results",
+    "env": "GEET_YOUTUBE_SEARCH_RESULTS",
+    "type": "int",
+    "default": "5",
+    "value": "5",
+    "secret": false,
+    "usage": "YouTube results to score per track"
+  },
+  {
+    "key": "youtube.max_duration_diff",
+    "flag": "--youtube-max-duration-diff",
+    "env": "GEET_YOUTUBE_MAX_DURATION_DIFF",
+    "type": "duration",
+    "default": "10s",
+    "value": "10s",
+    "secret": false,
+    "usage": "reject YouTube results whose length differs from Spotify's by more than this"
+  },
+  {
+    "key": "youtube.cookies_file",
+    "flag": "--youtube-cookies-file",
+    "env": "GEET_YOUTUBE_COOKIES_FILE",
+    "type": "string",
+    "default": "",
+    "value": "",
+    "secret": false,
+    "usage": "Netscape cookies file passed to yt-dlp"
+  },
+  {
+    "key": "youtube.cookies_from_browser",
+    "flag": "--youtube-cookies-from-browser",
+    "env": "GEET_YOUTUBE_COOKIES_FROM_BROWSER",
+    "type": "string",
+    "default": "",
+    "value": "",
+    "secret": false,
+    "usage": "send your YouTube sign-in from a browser, to get past \"confirm you're not a bot\": auto (the default browser), or brave, chromium, chrome, firefox, …; the keyring is added automatically. Off by default: YouTube then sees downloads as your account's"
+  },
+  {
+    "key": "youtube.music_fallback",
+    "flag": "--youtube-music-fallback",
+    "env": "GEET_YOUTUBE_MUSIC_FALLBACK",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "when YouTube search finds no match, look for the song on YouTube Music, which lists official studio audio at the album's exact length (about 4s more for that song only)"
+  },
+  {
+    "key": "youtube.title_fallback",
+    "flag": "--youtube-title-fallback",
+    "env": "GEET_YOUTUBE_TITLE_FALLBACK",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "last resort when nothing else matches: search by the song's title alone and accept only an upload with the full title within 2s of its length (for artists YouTube knows by another name); the song then carries a warning"
+  },
+  {
+    "key": "youtube.extra_args",
+    "flag": "--youtube-extra-args",
+    "env": "GEET_YOUTUBE_EXTRA_ARGS",
+    "type": "list",
+    "default": "",
+    "value": "",
+    "secret": false,
+    "usage": "extra yt-dlp arguments, space-separated"
+  },
+  {
+    "key": "search.country",
+    "flag": "--search-country",
+    "env": "GEET_SEARCH_COUNTRY",
+    "type": "string",
+    "default": "US",
+    "value": "US",
+    "secret": false,
+    "usage": "iTunes store that geet search looks in (two letters, e.g. US, GB, IN)"
+  },
+  {
+    "key": "search.limit",
+    "flag": "--search-limit",
+    "env": "GEET_SEARCH_LIMIT",
+    "type": "int",
+    "default": "15",
+    "value": "15",
+    "secret": false,
+    "usage": "search results offered to pick from"
+  },
+  {
+    "key": "search.picker",
+    "flag": "--search-picker",
+    "env": "GEET_SEARCH_PICKER",
+    "type": "string",
+    "default": "auto",
+    "value": "auto",
+    "secret": false,
+    "usage": "how search results are picked: auto (fzf if installed), fzf or list (numbered prompt)",
+    "choices": [
+      "auto",
+      "fzf",
+      "list"
+    ]
+  },
+  {
+    "key": "search.confirm",
+    "flag": "--search-confirm",
+    "env": "GEET_SEARCH_CONFIRM",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "ask before downloading songs picked from the search menu (--pick never asks)"
+  },
+  {
+    "key": "player.engine",
+    "flag": "--player-engine",
+    "env": "GEET_PLAYER_ENGINE",
+    "type": "string",
+    "default": "auto",
+    "value": "auto",
+    "secret": false,
+    "usage": "what geet play uses for audio: auto (mpv when installed, else ffplay), mpv or ffplay. Only mpv can seek and report an exact position, which synced lyrics need",
+    "choices": [
+      "auto",
+      "mpv",
+      "ffplay"
+    ]
+  },
+  {
+    "key": "player.stream",
+    "flag": "--player-stream",
+    "env": "GEET_PLAYER_STREAM",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "play a song that isn't downloaded straight from YouTube, so it starts in seconds; \"d\" while it plays keeps a proper copy. Off downloads first, as before"
+  },
+  {
+    "key": "player.visualizer",
+    "flag": "--player-visualizer",
+    "env": "GEET_PLAYER_VISUALIZER",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "show the spectrum beside the song while it plays"
+  },
+  {
+    "key": "player.lyrics",
+    "flag": "--player-lyrics",
+    "env": "GEET_PLAYER_LYRICS",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "look up synced lyrics (LRCLIB) and follow them while the song plays; songs without lyrics simply show none"
+  },
+  {
+    "key": "player.shuffle",
+    "flag": "--player-shuffle",
+    "env": "GEET_PLAYER_SHUFFLE",
+    "type": "bool",
+    "default": "false",
+    "value": "false",
+    "secret": false,
+    "usage": "play a queue in random order"
+  },
+  {
+    "key": "player.repeat",
+    "flag": "--player-repeat",
+    "env": "GEET_PLAYER_REPEAT",
+    "type": "bool",
+    "default": "false",
+    "value": "false",
+    "secret": false,
+    "usage": "start the queue again when it ends instead of quitting"
+  },
+  {
+    "key": "player.mpv",
+    "flag": "--player-mpv",
+    "env": "GEET_PLAYER_MPV",
+    "type": "string",
+    "default": "mpv",
+    "value": "mpv",
+    "secret": false,
+    "usage": "mpv executable, used by geet play"
+  },
+  {
+    "key": "player.ffplay",
+    "flag": "--player-ffplay",
+    "env": "GEET_PLAYER_FFPLAY",
+    "type": "string",
+    "default": "ffplay",
+    "value": "ffplay",
+    "secret": false,
+    "usage": "ffplay executable (ships with ffmpeg), the fallback player"
+  },
+  {
+    "key": "trending.source",
+    "flag": "--trending-source",
+    "env": "GEET_TRENDING_SOURCE",
+    "type": "string",
+    "default": "auto",
+    "value": "auto",
+    "secret": false,
+    "usage": "where geet trending reads the chart: auto (Deezer, topped up from Apple), deezer (localised by your connection) or apple (your search.country store)",
+    "choices": [
+      "auto",
+      "deezer",
+      "apple"
+    ]
+  },
+  {
+    "key": "trending.cache_for",
+    "flag": "--trending-cache-for",
+    "env": "GEET_TRENDING_CACHE_FOR",
+    "type": "duration",
+    "default": "6h0m0s",
+    "value": "6h0m0s",
+    "secret": false,
+    "usage": "how long a chart is kept before geet reads it again; charts move slowly, and this keeps the panel instant"
+  },
+  {
+    "key": "watch.interval",
+    "flag": "--watch-interval",
+    "env": "GEET_WATCH_INTERVAL",
+    "type": "duration",
+    "default": "1s",
+    "value": "1s",
+    "secret": false,
+    "usage": "how often geet watch checks the clipboard for a new link"
+  },
+  {
+    "key": "watch.notify",
+    "flag": "--watch-notify",
+    "env": "GEET_WATCH_NOTIFY",
+    "type": "bool",
+    "default": "true",
+    "value": "true",
+    "secret": false,
+    "usage": "geet watch shows a desktop notification (with the cover) when a link starts, finishes or fails"
+  },
+  {
+    "key": "tools.yt_dlp",
+    "flag": "--tools-yt-dlp",
+    "env": "GEET_TOOLS_YT_DLP",
+    "type": "string",
+    "default": "yt-dlp",
+    "value": "yt-dlp",
+    "secret": false,
+    "usage": "yt-dlp executable"
+  },
+  {
+    "key": "tools.yt_dlp_args",
+    "flag": "--tools-yt-dlp-args",
+    "env": "GEET_TOOLS_YT_DLP_ARGS",
+    "type": "list",
+    "default": "",
+    "value": "",
+    "secret": false,
+    "usage": "arguments before all others when running yt-dlp, space-separated: the yt-dlp zipapp when tools.yt_dlp is a Python interpreter"
+  },
+  {
+    "key": "tools.ffmpeg",
+    "flag": "--tools-ffmpeg",
+    "env": "GEET_TOOLS_FFMPEG",
+    "type": "string",
+    "default": "ffmpeg",
+    "value": "ffmpeg",
+    "secret": false,
+    "usage": "ffmpeg executable"
+  },
+  {
+    "key": "tools.ffprobe",
+    "flag": "--tools-ffprobe",
+    "env": "GEET_TOOLS_FFPROBE",
+    "type": "string",
+    "default": "ffprobe",
+    "value": "ffprobe",
+    "secret": false,
+    "usage": "ffprobe executable, used to index a library downloaded before the index existed"
+  },
+  {
+    "key": "tools.wl_paste",
+    "flag": "--tools-wl-paste",
+    "env": "GEET_TOOLS_WL_PASTE",
+    "type": "string",
+    "default": "wl-paste",
+    "value": "wl-paste",
+    "secret": false,
+    "usage": "wl-paste executable (wl-clipboard), which geet watch reads the clipboard with"
+  },
+  {
+    "key": "tools.notify_send",
+    "flag": "--tools-notify-send",
+    "env": "GEET_TOOLS_NOTIFY_SEND",
+    "type": "string",
+    "default": "notify-send",
+    "value": "notify-send",
+    "secret": false,
+    "usage": "notify-send executable (libnotify), for geet watch's notifications"
+  }
+]

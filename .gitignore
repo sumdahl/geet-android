@@ -1,0 +1,24 @@
+# Gradle / Android
+.gradle/
+build/
+local.properties
+.kotlin/
+captures/
+*.apk
+*.aab
+.externalNativeBuild/
+.cxx/
+
+# Secrets
+keystore.properties
+*.jks
+*.keystore
+
+# IDE
+.idea/
+*.iml
+.DS_Store
+
+# Agent scratch
+.scratch/
+.claude/settings.local.json
