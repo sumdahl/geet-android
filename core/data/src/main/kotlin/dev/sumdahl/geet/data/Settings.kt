@@ -30,7 +30,7 @@ data class AppSettings(
     /** Only download on Wi-Fi (or any unmetered network). */
     val unmeteredOnly: Boolean = false,
     /** Offer a link found on the clipboard when the app opens. */
-    val clipboardChip: Boolean = true,
+    val clipboardChip: Boolean = true
 )
 
 private val Context.store by preferencesDataStore("settings")
@@ -51,7 +51,7 @@ class SettingsStore @Inject constructor(@ApplicationContext private val context:
             coverColors = p[COVER] ?: true,
             downloadOnShare = p[ON_SHARE] ?: false,
             unmeteredOnly = p[UNMETERED] ?: false,
-            clipboardChip = p[CLIPBOARD] ?: true,
+            clipboardChip = p[CLIPBOARD] ?: true
         )
     }
 
@@ -95,7 +95,7 @@ class SettingsStore @Inject constructor(@ApplicationContext private val context:
         "GEET_WORK_DIR" to File(context.cacheDir, "work").absolutePath,
         "GEET_JOBS" to "3",
         "GEET_RESOLVE_JOBS" to "6",
-        "GEET_SEARCH_COUNTRY" to (Locale.getDefault().country.takeIf { it.length == 2 } ?: "US"),
+        "GEET_SEARCH_COUNTRY" to (Locale.getDefault().country.takeIf { it.length == 2 } ?: "US")
     )
 
     fun musicFolder(): File = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "Geet")

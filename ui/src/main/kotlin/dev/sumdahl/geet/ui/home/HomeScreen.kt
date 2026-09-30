@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -105,7 +104,7 @@ fun HomeScreen(
     clipboardChip: Boolean,
     onOpenDownloads: () -> Unit,
     onOpenPlayer: () -> Unit,
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val trending by viewModel.trending.collectAsStateWithLifecycle()
     val recent by viewModel.recent.collectAsStateWithLifecycle()
@@ -130,7 +129,7 @@ fun HomeScreen(
             searchBarState = searchState,
             onSearch = {},
             placeholder = { Text("Search songs, artists, albums") },
-            leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
+            leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) }
         )
     }
 
@@ -142,7 +141,7 @@ fun HomeScreen(
         }
         LazyColumn(
             contentPadding = PaddingValues(bottom = 160.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             item(key = "active") {
                 AnimatedVisibility(active != null, enter = expandVertically() + fadeIn(), exit = shrinkVertically() + fadeOut()) {
@@ -177,11 +176,23 @@ fun HomeScreen(
                                 Modifier.width(132.dp).clickable {
                                     viewModel.play(recent, i)
                                     onOpenPlayer()
-                                },
+                                }
                             ) {
                                 CoverArt(song.cover, Modifier.size(132.dp), MaterialTheme.shapes.large)
-                                Text(song.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 8.dp))
-                                Text(song.artist, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                Text(
+                                    song.title,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
+                                Text(
+                                    song.artist,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                             }
                         }
                     }
@@ -198,7 +209,7 @@ fun HomeScreen(
                         title = "Couldn't load the chart",
                         body = "Check your connection and try again.",
                         action = "Try again",
-                        onAction = viewModel::retryTrending,
+                        onAction = viewModel::retryTrending
                     )
                 }
                 is Load.Ready -> {
@@ -248,7 +259,7 @@ private fun ActiveBanner(item: JobWithTracks, onOpen: () -> Unit) {
 private fun ClipboardCard(link: String, onDownload: () -> Unit, onDismiss: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     ) {
         Row(Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Rounded.ContentPaste, contentDescription = null)
@@ -284,7 +295,7 @@ private fun PasteLink(onSubmit: (String) -> Unit) {
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Go),
         onKeyboardAction = { if (valid) link?.let(onSubmit) },
         shape = MaterialTheme.shapes.extraLarge,
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     )
 }
 
@@ -295,21 +306,33 @@ private fun TrendingCarousel(results: List<CatalogResult>, onDownload: (String) 
         preferredItemWidth = 220.dp,
         itemSpacing = 8.dp,
         contentPadding = PaddingValues(horizontal = 16.dp),
-        modifier = Modifier.fillMaxWidth().height(260.dp),
+        modifier = Modifier.fillMaxWidth().height(260.dp)
     ) { i ->
         val r = results[i]
         Box(
             Modifier
                 .fillMaxSize()
                 .maskClip(MaterialTheme.shapes.extraLarge)
-                .clickable { onDownload(r.ref) },
+                .clickable { onDownload(r.ref) }
         ) {
             CoverArt(r.coverUrl, Modifier.fillMaxSize(), MaterialTheme.shapes.extraLarge)
             Box(Modifier.fillMaxSize().background(Brush.verticalGradient(0.5f to Color.Transparent, 1f to Color.Black.copy(alpha = 0.7f))))
             Column(Modifier.align(Alignment.BottomStart).padding(16.dp)) {
                 Text("#${r.rank}", style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.8f))
-                Text(r.title, style = MaterialTheme.typography.titleMedium, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(r.artists.joinToString(", "), style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.85f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    r.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    r.artists.joinToString(", "),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.85f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
@@ -319,7 +342,11 @@ private fun TrendingCarousel(results: List<CatalogResult>, onDownload: (String) 
 private fun SearchResults(results: Load<List<CatalogResult>>?, states: Map<String, RowState>, onDownload: (String) -> Unit) {
     AnimatedContent(targetState = results, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "results") { r ->
         when (r) {
-            null -> MessageState(Icons.Rounded.Search, "Find any song", "Search Apple Music's and Deezer's catalogs, then download in one tap.")
+            null -> MessageState(
+                Icons.Rounded.Search,
+                "Find any song",
+                "Search Apple Music's and Deezer's catalogs, then download in one tap."
+            )
             Load.Loading -> Box(Modifier.fillMaxWidth().padding(48.dp), contentAlignment = Alignment.Center) { LoadingIndicator() }
             is Load.Failed -> MessageState(Icons.Rounded.CloudOff, "Search didn't answer", "Check your connection and try again.")
             is Load.Ready -> if (r.value.isEmpty()) {
@@ -348,26 +375,46 @@ private fun ResultRow(r: CatalogResult, state: RowState?, onDownload: () -> Unit
                 listOf(r.artists.joinToString(", "), r.album, r.year.takeIf { it > 0 }?.toString(), formatDuration(r.durationMs))
                     .filterNot { it.isNullOrBlank() }.joinToString(" · "),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         },
         leadingContent = {
             Box(contentAlignment = Alignment.Center) {
                 CoverArt(r.coverUrl, Modifier.size(52.dp), MaterialTheme.shapes.medium)
-                if (r.rank > 0) Text("${r.rank}", style = MaterialTheme.typography.labelSmall, color = Color.White, modifier = Modifier.align(Alignment.BottomStart).padding(4.dp))
-            }
-        },
-        trailingContent = {
-            AnimatedContent(targetState = state ?: RowState.Idle, transitionSpec = { scaleIn() + fadeIn() togetherWith fadeOut() }, label = "row") { s ->
-                when (s) {
-                    RowState.Idle -> IconButton(onClick = onDownload) { Icon(Icons.Rounded.Download, contentDescription = "Download ${r.title}") }
-                    RowState.Downloading -> LoadingIndicator(Modifier.size(40.dp))
-                    RowState.Saved -> Icon(Icons.Rounded.CheckCircle, contentDescription = "Saved", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(8.dp))
-                    RowState.Failed -> IconButton(onClick = onDownload) { Icon(Icons.Rounded.ErrorOutline, contentDescription = "Failed, try again", tint = MaterialTheme.colorScheme.error) }
+                if (r.rank >
+                    0
+                ) {
+                    Text(
+                        "${r.rank}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White,
+                        modifier = Modifier.align(Alignment.BottomStart).padding(4.dp)
+                    )
                 }
             }
         },
-        modifier = modifier.clickable(enabled = state == null || state == RowState.Idle, onClick = onDownload),
+        trailingContent = {
+            AnimatedContent(targetState = state ?: RowState.Idle, transitionSpec = {
+                scaleIn() + fadeIn() togetherWith fadeOut()
+            }, label = "row") { s ->
+                when (s) {
+                    RowState.Idle -> IconButton(onClick = onDownload) {
+                        Icon(Icons.Rounded.Download, contentDescription = "Download ${r.title}")
+                    }
+                    RowState.Downloading -> LoadingIndicator(Modifier.size(40.dp))
+                    RowState.Saved -> Icon(
+                        Icons.Rounded.CheckCircle,
+                        contentDescription = "Saved",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    RowState.Failed -> IconButton(onClick = onDownload) {
+                        Icon(Icons.Rounded.ErrorOutline, contentDescription = "Failed, try again", tint = MaterialTheme.colorScheme.error)
+                    }
+                }
+            }
+        },
+        modifier = modifier.clickable(enabled = state == null || state == RowState.Idle, onClick = onDownload)
     )
 }
 
@@ -376,9 +423,14 @@ private fun ExplicitBadge() {
     Surface(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         shape = MaterialTheme.shapes.extraSmall,
-        modifier = Modifier.padding(start = 6.dp),
+        modifier = Modifier.padding(start = 6.dp)
     ) {
-        Text("E", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.surface, modifier = Modifier.padding(horizontal = 4.dp))
+        Text(
+            "E",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.padding(horizontal = 4.dp)
+        )
     }
 }
 

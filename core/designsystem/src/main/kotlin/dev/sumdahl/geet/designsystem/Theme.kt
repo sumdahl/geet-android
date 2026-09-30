@@ -45,7 +45,13 @@ fun GeetTheme(mode: ThemeMode = ThemeMode.System, wallpaperColors: Boolean = tru
         val base = when {
             wallpaperColors && dark -> dynamicDarkColorScheme(context)
             wallpaperColors -> dynamicLightColorScheme(context)
-            else -> dynamicColorScheme(BrandSeed, dark, amoled, style = PaletteStyle.Expressive, specVersion = ColorSpec.SpecVersion.SPEC_2025)
+            else -> dynamicColorScheme(
+                BrandSeed,
+                dark,
+                amoled,
+                style = PaletteStyle.Expressive,
+                specVersion = ColorSpec.SpecVersion.SPEC_2025
+            )
         }
         if (amoled) base.copy(background = Color.Black, surface = Color.Black, surfaceContainerLowest = Color.Black) else base
     }
@@ -54,7 +60,7 @@ fun GeetTheme(mode: ThemeMode = ThemeMode.System, wallpaperColors: Boolean = tru
             colorScheme = scheme,
             motionScheme = MotionScheme.expressive(),
             typography = GeetTypography,
-            content = content,
+            content = content
         )
     }
 }
@@ -79,6 +85,6 @@ fun CoverTheme(seed: Color?, content: @Composable () -> Unit) {
         shapes = MaterialTheme.shapes,
         animate = true,
         animationSpec = spring(stiffness = Spring.StiffnessVeryLow),
-        content = content,
+        content = content
     )
 }

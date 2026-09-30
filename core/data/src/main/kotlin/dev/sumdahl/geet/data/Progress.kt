@@ -24,7 +24,7 @@ internal fun DownloadTrack?.apply(jobId: Long, e: DownloadEvent): DownloadTrack?
             path = e.path ?: t.path,
             skipped = e.skipped || e.duplicateOf != null,
             warning = e.warning,
-            lyricsPath = e.lyricsPath,
+            lyricsPath = e.lyricsPath
         )
         "failed" -> t.copy(stage = TrackStage.Failed, error = e.error)
         else -> t

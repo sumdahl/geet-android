@@ -37,7 +37,7 @@ fun CoverArt(model: Any?, modifier: Modifier = Modifier, shape: Shape = Material
             Icons.Rounded.MusicNote,
             contentDescription = null,
             modifier = Modifier.size(28.dp),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            tint = MaterialTheme.colorScheme.onSecondaryContainer
         )
         if (model != null) {
             AsyncImage(model = model, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
@@ -55,7 +55,7 @@ fun MorphingCover(model: Any?, playing: Boolean, modifier: Modifier = Modifier) 
     val progress by animateFloatAsState(
         targetValue = if (playing) 1f else 0f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
-        label = "cover shape",
+        label = "cover shape"
     )
     CoverArt(model, modifier, shape = MorphShape(morph, progress))
 }
@@ -67,9 +67,12 @@ class MorphShape(private val morph: Morph, private val progress: Float) : Shape 
         morph.asCubics(progress).forEachIndexed { i, c ->
             if (i == 0) path.moveTo(c.anchor0X * size.width, c.anchor0Y * size.height)
             path.cubicTo(
-                c.control0X * size.width, c.control0Y * size.height,
-                c.control1X * size.width, c.control1Y * size.height,
-                c.anchor1X * size.width, c.anchor1Y * size.height,
+                c.control0X * size.width,
+                c.control0Y * size.height,
+                c.control1X * size.width,
+                c.control1Y * size.height,
+                c.anchor1X * size.width,
+                c.anchor1Y * size.height
             )
         }
         path.close()

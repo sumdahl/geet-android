@@ -66,7 +66,15 @@ fun SeekBar(position: State<Long>, durationMs: Long, playing: Boolean, onSeek: (
     var dragFraction by remember { mutableFloatStateOf(0f) }
     val haptics = LocalHapticFeedback.current
     val amplitude by animateFloatAsState(if (playing && !dragging) 1f else 0f, label = "wave")
-    val fraction = { if (dragging) dragFraction else if (durationMs > 0) (position.value.toFloat() / durationMs).coerceIn(0f, 1f) else 0f }
+    val fraction = {
+        if (dragging) {
+            dragFraction
+        } else if (durationMs > 0) {
+            (position.value.toFloat() / durationMs).coerceIn(0f, 1f)
+        } else {
+            0f
+        }
+    }
     val shownSeconds by remember(durationMs) { derivedStateOf { (fraction() * durationMs / 1000).toLong() } }
     Column(modifier) {
         Box(
@@ -91,14 +99,14 @@ fun SeekBar(position: State<Long>, durationMs: Long, playing: Boolean, onSeek: (
                             onSeek((dragFraction * durationMs).toLong())
                             dragging = false
                         },
-                        onDragCancel = { dragging = false },
+                        onDragCancel = { dragging = false }
                     ) { change, _ -> dragFraction = (change.position.x / size.width).coerceIn(0f, 1f) }
-                },
+                }
         ) {
             LinearWavyProgressIndicator(
                 progress = fraction,
                 amplitude = { amplitude },
-                modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+                modifier = Modifier.fillMaxWidth().align(Alignment.Center)
             )
         }
         Row(Modifier.fillMaxWidth()) {
@@ -144,7 +152,7 @@ fun SpectrumBars(spectrum: Spectrum, playing: Boolean, modifier: Modifier = Modi
                 color = color.copy(alpha = 0.35f + 0.65f * level),
                 topLeft = Offset(i * (w + gap), (size.height - h) / 2),
                 size = Size(w, h),
-                cornerRadius = radius,
+                cornerRadius = radius
             )
         }
     }

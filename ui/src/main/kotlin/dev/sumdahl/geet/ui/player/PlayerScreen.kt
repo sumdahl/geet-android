@@ -88,20 +88,22 @@ fun PlayerScreen(onCollapse: () -> Unit, coverColors: Boolean, viewModel: Player
         Box(
             Modifier
                 .fillMaxSize()
-                .background(Brush.verticalGradient(listOf(colors.primaryContainer, colors.surfaceContainerLowest, colors.surfaceContainerLowest))),
+                .background(
+                    Brush.verticalGradient(listOf(colors.primaryContainer, colors.surfaceContainerLowest, colors.surfaceContainerLowest))
+                )
         ) {
             if (song == null) {
                 MessageState(
                     icon = Icons.Rounded.MusicNote,
                     title = "Nothing playing",
                     body = "Pick a song from your library and it plays straight away.",
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier.align(Alignment.Center)
                 )
                 return@Box
             }
             Column(
                 Modifier.fillMaxSize().safeDrawingPadding().padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onCollapse) { Icon(Icons.Rounded.KeyboardArrowDown, contentDescription = "Close player") }
@@ -109,7 +111,7 @@ fun PlayerScreen(onCollapse: () -> Unit, coverColors: Boolean, viewModel: Player
                         if (showLyrics) "Lyrics" else "Now playing",
                         style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.weight(1f),
-                        color = colors.onSurfaceVariant,
+                        color = colors.onSurfaceVariant
                     )
                     IconButton(onClick = {
                         val share = Intent(Intent.ACTION_SEND).setType("audio/*").putExtra(Intent.EXTRA_STREAM, song.uri)
@@ -121,10 +123,11 @@ fun PlayerScreen(onCollapse: () -> Unit, coverColors: Boolean, viewModel: Player
                 AnimatedContent(
                     targetState = showLyrics,
                     transitionSpec = {
-                        (fadeIn() + scaleIn(spring(dampingRatio = Spring.DampingRatioLowBouncy), initialScale = 0.92f)) togetherWith fadeOut()
+                        (fadeIn() + scaleIn(spring(dampingRatio = Spring.DampingRatioLowBouncy), initialScale = 0.92f)) togetherWith
+                            fadeOut()
                     },
                     modifier = Modifier.weight(1f).fillMaxWidth(),
-                    label = "cover or lyrics",
+                    label = "cover or lyrics"
                 ) { lyricsShown ->
                     if (lyricsShown) {
                         LyricsView(lyrics, position, onSeek = viewModel::seekTo)
@@ -133,7 +136,7 @@ fun PlayerScreen(onCollapse: () -> Unit, coverColors: Boolean, viewModel: Player
                             MorphingCover(
                                 model = song.cover,
                                 playing = state.playing,
-                                modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth().aspectRatio(1f),
+                                modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth().aspectRatio(1f)
                             )
                         }
                     }
@@ -145,14 +148,14 @@ fun PlayerScreen(onCollapse: () -> Unit, coverColors: Boolean, viewModel: Player
                     style = MaterialTheme.typography.headlineMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth().basicMarquee(),
+                    modifier = Modifier.fillMaxWidth().basicMarquee()
                 )
                 Text(
                     listOf(song.artist, song.album).filter(String::isNotBlank).joinToString(" · "),
                     style = MaterialTheme.typography.titleMedium,
                     color = colors.onSurfaceVariant,
                     maxLines = 1,
-                    modifier = Modifier.fillMaxWidth().basicMarquee(),
+                    modifier = Modifier.fillMaxWidth().basicMarquee()
                 )
                 Spacer(Modifier.height(12.dp))
                 SeekBar(position, state.durationMs, state.playing, onSeek = viewModel::seekTo, modifier = Modifier.fillMaxWidth())
@@ -168,17 +171,19 @@ fun PlayerScreen(onCollapse: () -> Unit, coverColors: Boolean, viewModel: Player
                         }
                     },
                     trailingContent = {
-                        FilledTonalIconToggleButton(checked = state.repeat != Player.REPEAT_MODE_OFF, onCheckedChange = { viewModel.cycleRepeat() }) {
+                        FilledTonalIconToggleButton(checked = state.repeat != Player.REPEAT_MODE_OFF, onCheckedChange = {
+                            viewModel.cycleRepeat()
+                        }) {
                             Icon(
                                 if (state.repeat == Player.REPEAT_MODE_ONE) Icons.Rounded.RepeatOne else Icons.Rounded.Repeat,
                                 contentDescription = when (state.repeat) {
                                     Player.REPEAT_MODE_ONE -> "Repeating this song"
                                     Player.REPEAT_MODE_ALL -> "Repeating the queue"
                                     else -> "Repeat off"
-                                },
+                                }
                             )
                         }
-                    },
+                    }
                 ) {
                     IconButton(onClick = viewModel::previous) { Icon(Icons.Rounded.SkipPrevious, contentDescription = "Previous") }
                     FilledIconButton(
@@ -187,12 +192,12 @@ fun PlayerScreen(onCollapse: () -> Unit, coverColors: Boolean, viewModel: Player
                             viewModel.toggle()
                         },
                         modifier = Modifier.size(IconButtonDefaults.mediumContainerSize()),
-                        shapes = IconButtonDefaults.shapes(),
+                        shapes = IconButtonDefaults.shapes()
                     ) {
                         Icon(
                             if (state.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
                             contentDescription = if (state.playing) "Pause" else "Play",
-                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize),
+                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                         )
                     }
                     IconButton(onClick = viewModel::next) { Icon(Icons.Rounded.SkipNext, contentDescription = "Next") }
@@ -200,7 +205,7 @@ fun PlayerScreen(onCollapse: () -> Unit, coverColors: Boolean, viewModel: Player
 
                 Row(
                     Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     FilledTonalIconToggleButton(checked = showLyrics, onCheckedChange = { showLyrics = it }) {
                         Icon(Icons.Rounded.Lyrics, contentDescription = if (showLyrics) "Hide lyrics" else "Show lyrics")

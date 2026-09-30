@@ -35,7 +35,7 @@ data class PlayerState(
     val playing: Boolean = false,
     val durationMs: Long = 0,
     val shuffle: Boolean = false,
-    val repeat: Int = Player.REPEAT_MODE_OFF,
+    val repeat: Int = Player.REPEAT_MODE_OFF
 ) {
     val current: QueueSong? get() = queue.getOrNull(index)
 }
@@ -60,7 +60,7 @@ class PlayerViewModel @Inject constructor(private val holder: PlayerHolder, lyri
             playing = p.isPlaying,
             durationMs = p.duration.takeIf { it != C.TIME_UNSET } ?: 0,
             shuffle = p.shuffleModeEnabled,
-            repeat = p.repeatMode,
+            repeat = p.repeatMode
         )
         val listener = object : Player.Listener {
             override fun onEvents(player: Player, events: Player.Events) {
@@ -115,6 +115,6 @@ class PlayerViewModel @Inject constructor(private val holder: PlayerHolder, lyri
         uri = localConfiguration?.uri,
         title = mediaMetadata.title?.toString().orEmpty(),
         artist = mediaMetadata.artist?.toString().orEmpty(),
-        album = mediaMetadata.albumTitle?.toString().orEmpty(),
+        album = mediaMetadata.albumTitle?.toString().orEmpty()
     )
 }

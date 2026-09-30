@@ -115,11 +115,11 @@ fun DownloadsScreen(onOpenLibrary: () -> Unit, viewModel: DownloadsViewModel = h
                         }) { Icon(Icons.Rounded.DeleteSweep, contentDescription = "Clear finished") }
                     }
                 },
-                scrollBehavior = scroll,
+                scrollBehavior = scroll
             )
         },
         snackbarHost = { SnackbarHost(snackbar) },
-        modifier = Modifier.nestedScroll(scroll.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scroll.nestedScrollConnection)
     ) { padding ->
         val list = jobs
         when {
@@ -128,12 +128,12 @@ fun DownloadsScreen(onOpenLibrary: () -> Unit, viewModel: DownloadsViewModel = h
                 MessageState(
                     icon = Icons.Rounded.Download,
                     title = "Nothing downloading",
-                    body = "Share a song, album or playlist to Geet from Spotify, YouTube Music or YouTube, or paste a link on Home.",
+                    body = "Share a song, album or playlist to Geet from Spotify, YouTube Music or YouTube, or paste a link on Home."
                 )
             }
             else -> LazyColumn(
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = padding.calculateTopPadding(), bottom = 120.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(list, key = { it.job.id }) { item ->
                     JobCard(
@@ -142,7 +142,7 @@ fun DownloadsScreen(onOpenLibrary: () -> Unit, viewModel: DownloadsViewModel = h
                         onRetry = { viewModel.retry(item.job.id) },
                         onRemove = { viewModel.remove(item.job.id) },
                         onOpenLibrary = onOpenLibrary,
-                        modifier = Modifier.animateItem(),
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
@@ -159,7 +159,7 @@ private fun JobCard(
     onRetry: () -> Unit,
     onRemove: () -> Unit,
     onOpenLibrary: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val job = item.job
     var open by rememberSaveable(job.id) { mutableStateOf(false) }
@@ -173,15 +173,25 @@ private fun JobCard(
                         Text(
                             it,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = if (job.state == JobState.Failed) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = if (job.state ==
+                                JobState.Failed
+                            ) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
                             maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
                 when (job.state) {
-                    JobState.Queued, JobState.Running -> IconButton(onClick = onCancel) { Icon(Icons.Rounded.Close, contentDescription = "Cancel") }
-                    JobState.Failed, JobState.Cancelled -> IconButton(onClick = onRetry) { Icon(Icons.Rounded.Refresh, contentDescription = "Try again") }
+                    JobState.Queued, JobState.Running -> IconButton(onClick = onCancel) {
+                        Icon(Icons.Rounded.Close, contentDescription = "Cancel")
+                    }
+                    JobState.Failed, JobState.Cancelled -> IconButton(onClick = onRetry) {
+                        Icon(Icons.Rounded.Refresh, contentDescription = "Try again")
+                    }
                     JobState.Done -> if (job.failed > 0) {
                         IconButton(onClick = onRetry) { Icon(Icons.Rounded.Refresh, contentDescription = "Retry the failed songs") }
                     } else {
@@ -193,8 +203,14 @@ private fun JobCard(
                 val finished = job.saved + job.existing + job.failed
                 if (job.total > 0 && (finished > 0 || item.tracks.isNotEmpty())) {
                     LinearWavyProgressIndicator(
-                        progress = { (finished + item.tracks.filter { it.stage == TrackStage.Downloading }.sumOf { it.progress.toDouble() }.toFloat()) / job.total },
-                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                        progress = {
+                            (
+                                finished +
+                                    item.tracks.filter { it.stage == TrackStage.Downloading }.sumOf { it.progress.toDouble() }.toFloat()
+                                ) /
+                                job.total
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
                     )
                 } else {
                     LinearWavyProgressIndicator(Modifier.fillMaxWidth().padding(top = 16.dp))
@@ -203,13 +219,13 @@ private fun JobCard(
             if (item.tracks.size > 1 || (item.tracks.isNotEmpty() && job.kind != "track")) {
                 Row(
                     Modifier.fillMaxWidth().padding(top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         if (open) "Hide songs" else "Show ${songs(item.tracks.size)}",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     )
                     Icon(if (open) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore, contentDescription = null)
                 }
@@ -231,24 +247,47 @@ private fun JobCard(
 
 @Composable
 private fun TrackRow(track: DownloadTrack) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(vertical = 4.dp)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.padding(vertical = 4.dp)
+    ) {
         Box(Modifier.size(28.dp), contentAlignment = Alignment.Center) {
             AnimatedContent(
                 targetState = track.stage,
                 transitionSpec = { scaleIn() + fadeIn() togetherWith fadeOut() },
-                label = "stage",
+                label = "stage"
             ) { stage ->
                 when (stage) {
-                    TrackStage.Waiting -> Icon(Icons.Rounded.Schedule, contentDescription = "Waiting", tint = MaterialTheme.colorScheme.outline)
+                    TrackStage.Waiting -> Icon(
+                        Icons.Rounded.Schedule,
+                        contentDescription = "Waiting",
+                        tint = MaterialTheme.colorScheme.outline
+                    )
                     TrackStage.Resolved -> LoadingIndicator(Modifier.size(28.dp))
-                    TrackStage.Downloading, TrackStage.Tagging -> CircularWavyProgressIndicator(progress = { track.progress }, modifier = Modifier.size(24.dp))
-                    TrackStage.Done -> Icon(Icons.Rounded.CheckCircle, contentDescription = "Saved", tint = MaterialTheme.colorScheme.primary)
-                    TrackStage.Failed -> Icon(Icons.Rounded.ErrorOutline, contentDescription = "Failed", tint = MaterialTheme.colorScheme.error)
+                    TrackStage.Downloading, TrackStage.Tagging -> CircularWavyProgressIndicator(progress = {
+                        track.progress
+                    }, modifier = Modifier.size(24.dp))
+                    TrackStage.Done -> Icon(
+                        Icons.Rounded.CheckCircle,
+                        contentDescription = "Saved",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    TrackStage.Failed -> Icon(
+                        Icons.Rounded.ErrorOutline,
+                        contentDescription = "Failed",
+                        tint = MaterialTheme.colorScheme.error
+                    )
                 }
             }
         }
         Column(Modifier.weight(1f)) {
-            Text(track.name.substringAfter(" - "), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                track.name.substringAfter(" - "),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             Text(
                 when (track.stage) {
                     TrackStage.Waiting -> track.name.substringBefore(" - ")
@@ -263,9 +302,15 @@ private fun TrackRow(track: DownloadTrack) {
                     TrackStage.Failed -> friendly(track.error)
                 },
                 style = MaterialTheme.typography.bodySmall,
-                color = if (track.stage == TrackStage.Failed) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                color = if (track.stage ==
+                    TrackStage.Failed
+                ) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -282,13 +327,15 @@ private fun status(job: DownloadJob): String {
         }
         JobState.Cancelled -> "Cancelled"
         JobState.Failed -> friendly(job.error)
-        JobState.Done -> buildList {
-            if (job.saved > 0) add("${job.saved} saved")
-            if (job.existing > 0) add("${job.existing} already had")
-            if (job.failed > 0) add("${job.failed} failed")
-        }.joinToString(" · ").ifEmpty { "Done" } + (job.finishedAt?.let { " · ${ago(it)}" } ?: "")
+        JobState.Done -> summary(job) + (job.finishedAt?.let { " · ${ago(it)}" } ?: "")
     }
 }
+
+private fun summary(job: DownloadJob) = buildList {
+    if (job.saved > 0) add("${job.saved} saved")
+    if (job.existing > 0) add("${job.existing} already had")
+    if (job.failed > 0) add("${job.failed} failed")
+}.joinToString(" · ").ifEmpty { "Done" }
 
 /** The engine's reasons, in words for a phone: what happened and what to do about it. */
 internal fun friendly(error: String?): String = when {
@@ -298,6 +345,7 @@ internal fun friendly(error: String?): String = when {
     "no YouTube result matched" in error -> "Couldn't find this song on YouTube."
     "not a Spotify" in error || "unsupported" in error -> "That link isn't a song, album or playlist Geet can read."
     "private" in error.lowercase() -> "This playlist is private. Only public ones can be downloaded."
-    "no such host" in error || "network" in error.lowercase() || "timeout" in error.lowercase() -> "No connection. It'll work once you're back online."
+    listOf("no such host", "network", "timeout").any { it in error.lowercase() } ->
+        "No connection. It'll work once you're back online."
     else -> error
 }

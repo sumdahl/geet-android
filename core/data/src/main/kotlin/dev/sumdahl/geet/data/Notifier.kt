@@ -26,12 +26,12 @@ class Notifier @Inject constructor(@ApplicationContext private val context: Cont
             NotificationChannel(CHANNEL_PROGRESS, "Downloading", NotificationManager.IMPORTANCE_LOW).apply {
                 description = "Progress while songs download"
                 setShowBadge(false)
-            },
+            }
         )
         system.createNotificationChannel(
             NotificationChannel(CHANNEL_DONE, "Finished downloads", NotificationManager.IMPORTANCE_DEFAULT).apply {
                 description = "When a song, album or playlist has finished downloading"
-            },
+            }
         )
     }
 
@@ -80,7 +80,9 @@ class Notifier @Inject constructor(@ApplicationContext private val context: Cont
             if (job.failed > 0) add("${job.failed} failed")
         }
         return when (job.state) {
-            JobState.Failed -> "Couldn't download ${job.name}" to (job.error ?: parts.joinToString(" · ").ifEmpty { "Something went wrong" })
+            JobState.Failed ->
+                "Couldn't download ${job.name}" to
+                    (job.error ?: parts.joinToString(" · ").ifEmpty { "Something went wrong" })
             else -> job.name to parts.joinToString(" · ").ifEmpty { "Saved" }
         }
     }

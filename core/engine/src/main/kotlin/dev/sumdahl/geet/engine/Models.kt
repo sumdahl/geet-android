@@ -25,7 +25,7 @@ data class DownloadEvent(
     /** reading only: index, spotify or tags */
     val step: String? = null,
     val progress: Float? = null,
-    @SerialName("lyrics_path") val lyricsPath: String? = null,
+    @SerialName("lyrics_path") val lyricsPath: String? = null
 )
 
 /** `geet info <link> --json`: what a link is, before anything downloads. */
@@ -38,7 +38,7 @@ data class LinkInfo(
     val name: String = "",
     @SerialName("cover_url") val coverUrl: String? = null,
     val total: Int = 0,
-    val tracks: List<InfoTrack> = emptyList(),
+    val tracks: List<InfoTrack> = emptyList()
 )
 
 @Serializable
@@ -48,7 +48,7 @@ data class InfoTrack(
     val artists: List<String> = emptyList(),
     @SerialName("duration_ms") val durationMs: Long = 0,
     val explicit: Boolean = false,
-    @SerialName("cover_url") val coverUrl: String? = null,
+    @SerialName("cover_url") val coverUrl: String? = null
 )
 
 /** A row of `geet search --json` and `geet trending --json` (which adds [rank]). */
@@ -63,7 +63,7 @@ data class CatalogResult(
     @SerialName("duration_ms") val durationMs: Long = 0,
     @SerialName("cover_url") val coverUrl: String? = null,
     val explicit: Boolean = false,
-    val clean: Boolean = false,
+    val clean: Boolean = false
 )
 
 /** `geet lyrics <file> --json`. */
@@ -72,7 +72,7 @@ data class LyricsResult(
     val path: String = "",
     @SerialName("lrc_path") val lrcPath: String? = null,
     val synced: Boolean = false,
-    val lines: List<LyricLine> = emptyList(),
+    val lines: List<LyricLine> = emptyList()
 )
 
 @Serializable
@@ -89,7 +89,7 @@ data class EngineSetting(
     val value: String = "",
     val secret: Boolean = false,
     val usage: String = "",
-    val choices: List<String> = emptyList(),
+    val choices: List<String> = emptyList()
 )
 
 /** `geet doctor --json`. */
@@ -103,5 +103,5 @@ data class HealthCheck(
     val name: String = "",
     val status: String = "",
     val detail: String = "",
-    val fix: String = "",
+    val fix: String = ""
 )

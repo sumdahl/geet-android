@@ -1,5 +1,7 @@
 # Geet
 
+<img src="design/icon/geet_play_store_512.png" width="96" alt="Geet" />
+
 Download music on Android, beautifully. Share a Spotify, YouTube Music or YouTube link to Geet and the songs land in your Music folder, tagged, with album covers and synced lyrics, then play them in a player that takes on each song's colours.
 
 - **Share to download:** share a song, album or playlist from Spotify, YouTube Music or YouTube, and a sheet shows what it is before you tap Download.
@@ -21,6 +23,6 @@ git clone https://github.com/sumdahl/geet ../geet
 
 See [AGENTS.md](AGENTS.md) for the architecture and the full check.
 
-## Your logo
+## Logo
 
-Replace `app/src/main/res/drawable/ic_launcher_foreground.xml` (the colour logo, kept within the middle 66% of a 108 dp square) and `ic_launcher_monochrome.xml` (a one-colour silhouette for themed icons). The splash screen and notifications use them too.
+The icon's sources are in `design/icon` (SVG and PNG). The launcher icon, its themed (monochrome) layer, the splash icon and the status-bar icon are vector drawables made from them (`app/src/main/res/drawable/ic_launcher_*.xml`, `ic_splash.xml`, `core/data/src/main/res/drawable/ic_stat_geet.xml`), in Geet rose `#E0457B`.

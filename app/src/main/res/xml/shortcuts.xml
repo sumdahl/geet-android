@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:icon="@drawable/ic_shortcut_paste"
+        android:shortcutId="paste"
+        android:shortcutShortLabel="@string/shortcut_paste">
+        <intent
+            android:action="dev.sumdahl.geet.FROM_CLIPBOARD"
+            android:targetClass="dev.sumdahl.geet.ShareActivity"
+            android:targetPackage="dev.sumdahl.geet" />
+    </shortcut>
+    <shortcut
+        android:icon="@drawable/ic_shortcut_downloads"
+        android:shortcutId="downloads"
+        android:shortcutShortLabel="@string/shortcut_downloads">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="dev.sumdahl.geet.MainActivity"
+            android:targetPackage="dev.sumdahl.geet">
+            <extra android:name="destination" android:value="downloads" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:icon="@drawable/ic_shortcut_library"
+        android:shortcutId="library"
+        android:shortcutShortLabel="@string/shortcut_library">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="dev.sumdahl.geet.MainActivity"
+            android:targetPackage="dev.sumdahl.geet">
+            <extra android:name="destination" android:value="library" />
+        </intent>
+    </shortcut>
+</shortcuts>

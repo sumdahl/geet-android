@@ -31,7 +31,7 @@ data class LibraryState(
     val query: String = "",
     val playlists: List<Group> = emptyList(),
     val albums: List<Group> = emptyList(),
-    val artists: List<Group> = emptyList(),
+    val artists: List<Group> = emptyList()
 )
 
 @HiltViewModel
@@ -49,9 +49,15 @@ class LibraryViewModel @Inject constructor(private val library: LibraryRepositor
             loaded = true,
             songs = songs,
             query = q,
-            playlists = songs.filter { it.folder.isNotEmpty() }.groupBy { it.folder }.map { (k, v) -> Group(k.replace('-', ' '), v) }.sortedBy { it.name.lowercase() },
-            albums = songs.filter { it.album.isNotBlank() }.groupBy { it.album }.map { (k, v) -> Group(k, v) }.sortedBy { it.name.lowercase() },
-            artists = songs.groupBy { it.artist.substringBefore(", ").ifBlank { "Unknown artist" } }.map { (k, v) -> Group(k, v) }.sortedBy { it.name.lowercase() },
+            playlists = songs.filter {
+                it.folder.isNotEmpty()
+            }.groupBy { it.folder }.map { (k, v) -> Group(k.replace('-', ' '), v) }.sortedBy { it.name.lowercase() },
+            albums = songs.filter {
+                it.album.isNotBlank()
+            }.groupBy { it.album }.map { (k, v) -> Group(k, v) }.sortedBy { it.name.lowercase() },
+            artists = songs.groupBy {
+                it.artist.substringBefore(", ").ifBlank { "Unknown artist" }
+            }.map { (k, v) -> Group(k, v) }.sortedBy { it.name.lowercase() }
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LibraryState())
 

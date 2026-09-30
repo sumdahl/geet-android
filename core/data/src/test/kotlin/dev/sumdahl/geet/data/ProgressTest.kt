@@ -8,7 +8,15 @@ import org.junit.Test
 
 class ProgressTest {
     private fun ev(stage: String, index: Int = 1, progress: Float? = null, skipped: Boolean = false) =
-        DownloadEvent(track = "A - Song", stage = stage, index = index, total = 2, progress = progress, skipped = skipped, path = "/m/Song - A.opus")
+        DownloadEvent(
+            track = "A - Song",
+            stage = stage,
+            index = index,
+            total = 2,
+            progress = progress,
+            skipped = skipped,
+            path = "/m/Song - A.opus"
+        )
 
     @Test
     fun songWalksThroughTheStages() {

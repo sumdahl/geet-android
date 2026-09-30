@@ -57,9 +57,17 @@ class SettingsViewModel @Inject constructor(private val store: SettingsStore, pr
         update.value = Task.Running
         update.value = Task.Done(
             runCatching { engine.updateYtDlp() }.fold(
-                { status -> if (status == "ALREADY_UP_TO_DATE") "yt-dlp is already the newest" else "yt-dlp updated to ${engine.ytDlpVersion()}" },
-                { "Couldn't update: ${it.message}" },
-            ),
+                { status ->
+                    if (status ==
+                        "ALREADY_UP_TO_DATE"
+                    ) {
+                        "yt-dlp is already the newest"
+                    } else {
+                        "yt-dlp updated to ${engine.ytDlpVersion()}"
+                    }
+                },
+                { "Couldn't update: ${it.message}" }
+            )
         )
     }
 
@@ -70,6 +78,10 @@ class SettingsViewModel @Inject constructor(private val store: SettingsStore, pr
     }
 
     private companion object {
-        val HIDDEN = listOf("tools", "player", "watch", "progress", "search.picker", "search.confirm", "index_path", "work_dir", "output", "youtube.cookies_from_browser")
+        val HIDDEN =
+            listOf(
+                "tools", "player", "watch", "progress", "search.picker", "search.confirm",
+                "index_path", "work_dir", "output", "youtube.cookies_from_browser"
+            )
     }
 }

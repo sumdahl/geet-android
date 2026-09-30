@@ -20,7 +20,7 @@ internal val GeetTypography = base.copy(
     headlineMedium = base.headlineMedium.copy(fontWeight = FontWeight.Bold),
     headlineSmall = base.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
     titleLarge = base.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-    titleMedium = base.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+    titleMedium = base.titleMedium.copy(fontWeight = FontWeight.SemiBold)
 )
 
 /** The lyric line being sung: big and bold, and still readable when it wraps. */

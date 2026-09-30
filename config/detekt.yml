@@ -15,6 +15,9 @@ complexity:
   TooManyFunctions:
     # Private helpers aren't API surface; the rule is about what a class exposes.
     ignorePrivate: true
+    # A DAO and the engine runner are one wide API each (a query or a command per use); splitting them would scatter it.
+    allowedFunctionsPerInterface: 20
+    allowedFunctionsPerClass: 16
   CyclomaticComplexMethod:
     ignoreAnnotated: ['Composable']
 style:

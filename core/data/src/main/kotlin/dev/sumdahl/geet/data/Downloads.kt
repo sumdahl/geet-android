@@ -53,7 +53,7 @@ data class DownloadJob(
     /** Why the whole link failed (a bad link, YouTube's bot check…). */
     val error: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
-    val finishedAt: Long? = null,
+    val finishedAt: Long? = null
 )
 
 @Entity(tableName = "track", primaryKeys = ["jobId", "index"])
@@ -68,7 +68,7 @@ data class DownloadTrack(
     val error: String? = null,
     val warning: String? = null,
     val skipped: Boolean = false,
-    val lyricsPath: String? = null,
+    val lyricsPath: String? = null
 )
 
 class Converters {
@@ -128,7 +128,7 @@ interface DownloadDao {
 
     @Query(
         """UPDATE job SET state = :state, readingDone = :readingDone, readingTotal = :readingTotal, total = MAX(total, :total),
-           saved = :saved, existing = :existing, failed = :failed, error = :error, finishedAt = :finishedAt WHERE id = :id""",
+           saved = :saved, existing = :existing, failed = :failed, error = :error, finishedAt = :finishedAt WHERE id = :id"""
     )
     suspend fun progress(
         id: Long,
@@ -140,7 +140,7 @@ interface DownloadDao {
         existing: Int,
         failed: Int,
         error: String?,
-        finishedAt: Long?,
+        finishedAt: Long?
     )
 
     @Query("UPDATE job SET state = :state, finishedAt = :finishedAt WHERE id = :id")

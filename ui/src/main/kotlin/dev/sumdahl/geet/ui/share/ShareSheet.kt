@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.sumdahl.geet.data.DownloadJob
 import dev.sumdahl.geet.data.JobState
 import dev.sumdahl.geet.designsystem.CoverTheme
 import dev.sumdahl.geet.designsystem.component.CoverArt
@@ -79,28 +80,44 @@ fun ShareSheet(link: String?, onDismiss: () -> Unit, onOpenApp: () -> Unit, view
         ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheet) {
             Column(
                 Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 16.dp).navigationBarsPadding(),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 AnimatedContent(
                     targetState = state.info,
-                    transitionSpec = { (fadeIn() + scaleIn(spring(dampingRatio = Spring.DampingRatioLowBouncy), initialScale = 0.9f)) togetherWith fadeOut() },
+                    transitionSpec = {
+                        (fadeIn() + scaleIn(spring(dampingRatio = Spring.DampingRatioLowBouncy), initialScale = 0.9f)) togetherWith
+                            fadeOut()
+                    },
                     contentKey = { it::class },
-                    label = "preview",
+                    label = "preview"
                 ) { info ->
                     when (info) {
-                        ShareInfo.Reading -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        ShareInfo.Reading -> Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
                             Box(Modifier.size(96.dp), contentAlignment = Alignment.Center) { LoadingIndicator(Modifier.size(72.dp)) }
                             Column {
                                 Text("Reading the link…", style = MaterialTheme.typography.titleMedium)
-                                Text(state.link.orEmpty(), style = MaterialTheme.typography.bodySmall, maxLines = 2, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(
+                                    state.link.orEmpty(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                         }
                         ShareInfo.NotALink -> MessageState(
                             icon = Icons.Rounded.LinkOff,
                             title = "Nothing Geet can download",
-                            body = "Share a song, album or playlist from Spotify, YouTube Music or YouTube.",
+                            body = "Share a song, album or playlist from Spotify, YouTube Music or YouTube."
                         )
-                        is ShareInfo.Failed -> MessageState(icon = Icons.Rounded.ErrorOutline, title = "Couldn't read this link", body = friendly(info.message))
+                        is ShareInfo.Failed -> MessageState(
+                            icon = Icons.Rounded.ErrorOutline,
+                            title = "Couldn't read this link",
+                            body = friendly(info.message)
+                        )
                         is ShareInfo.Ready -> Preview(info.info)
                     }
                 }
@@ -114,7 +131,7 @@ fun ShareSheet(link: String?, onDismiss: () -> Unit, onOpenApp: () -> Unit, view
                             onOpenApp()
                         })
                     }
-                    job != null -> Progress(job.state, job.saved + job.existing + job.failed, job.total, job.readingDone, job.readingTotal, job.failed, job.error, onDismiss, onOpenApp)
+                    job != null -> Progress(job, onDismiss, onOpenApp)
                     else -> OutlinedButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text("Close") }
                 }
             }
@@ -133,19 +150,32 @@ private fun Preview(info: LinkInfo) {
                     listOfNotNull(
                         "${sourceName(info.source)} ${info.kind}".trim(),
                         if (info.kind == "track") info.tracks.firstOrNull()?.artists?.joinToString(", ") else songs(info.total),
-                        info.tracks.sumOf { it.durationMs }.takeIf { it > 0 && info.tracks.size == info.total }?.let(::formatDuration),
+                        info.tracks.sumOf { it.durationMs }.takeIf { it > 0 && info.tracks.size == info.total }?.let(::formatDuration)
                     ).joinToString(" · "),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
         if (info.kind != "track" && info.tracks.isNotEmpty()) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 info.tracks.take(3).forEach {
-                    Text("${it.title} · ${it.artists.joinToString(", ")}", style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        "${it.title} · ${it.artists.joinToString(", ")}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
-                if (info.total > 3) Text("and ${info.total - 3} more", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (info.total >
+                    3
+                ) {
+                    Text(
+                        "and ${info.total - 3} more",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }
@@ -178,7 +208,7 @@ private fun FormatChoice(selected: String, onSelect: (String) -> Unit) {
                         formats.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
                         else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                     },
-                    modifier = Modifier.weight(1f).semantics { role = Role.RadioButton },
+                    modifier = Modifier.weight(1f).semantics { role = Role.RadioButton }
                 ) { Text(label) }
             }
         }
@@ -189,7 +219,7 @@ private fun FormatChoice(selected: String, onSelect: (String) -> Unit) {
                 else -> "YouTube's own audio, kept as it is: best quality, smallest files."
             },
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -222,22 +252,19 @@ private fun DownloadButton(onDownload: () -> Unit, onDownloadAndOpen: () -> Unit
                 }
             }
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
     )
 }
 
 @Composable
-private fun Progress(
-    state: JobState,
-    finished: Int,
-    total: Int,
-    readingDone: Int,
-    readingTotal: Int,
-    failed: Int,
-    error: String?,
-    onDismiss: () -> Unit,
-    onOpenApp: () -> Unit,
-) {
+private fun Progress(job: DownloadJob, onDismiss: () -> Unit, onOpenApp: () -> Unit) {
+    val state = job.state
+    val finished = job.saved + job.existing + job.failed
+    val total = job.total
+    val readingDone = job.readingDone
+    val readingTotal = job.readingTotal
+    val failed = job.failed
+    val error = job.error
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         AnimatedContent(targetState = state, transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "progress") { s ->
             when (s) {
@@ -249,25 +276,63 @@ private fun Progress(
                             total > 1 -> "Downloading · $finished of $total"
                             else -> "Downloading"
                         },
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium
                     )
                     if (total > 1 && finished > 0) {
                         LinearWavyProgressIndicator(progress = { finished.toFloat() / total }, modifier = Modifier.fillMaxWidth())
                     } else {
                         LinearWavyProgressIndicator(Modifier.fillMaxWidth())
                     }
-                    Text("You can close this; Geet keeps going in the background.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        "You can close this; Geet keeps going in the background.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
                 JobState.Done -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Icon(Icons.Rounded.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
-                    Text(if (failed > 0) "Done, but $failed couldn't be downloaded" else "Saved to your library", style = MaterialTheme.typography.titleMedium)
+                    Icon(
+                        Icons.Rounded.CheckCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Text(
+                        if (failed >
+                            0
+                        ) {
+                            "Done, but $failed couldn't be downloaded"
+                        } else {
+                            "Saved to your library"
+                        },
+                        style = MaterialTheme.typography.titleMedium
+                    )
                 }
-                JobState.Failed, JobState.Cancelled -> Text(if (s == JobState.Cancelled) "Cancelled" else friendly(error), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.error)
+                JobState.Failed, JobState.Cancelled -> Text(
+                    if (s ==
+                        JobState.Cancelled
+                    ) {
+                        "Cancelled"
+                    } else {
+                        friendly(error)
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Close") }
-            Button(onClick = onOpenApp, modifier = Modifier.weight(1f)) { Text(if (state == JobState.Done) "Open library" else "Open Geet") }
+            Button(onClick = onOpenApp, modifier = Modifier.weight(1f)) {
+                Text(
+                    if (state ==
+                        JobState.Done
+                    ) {
+                        "Open library"
+                    } else {
+                        "Open Geet"
+                    }
+                )
+            }
         }
     }
 }

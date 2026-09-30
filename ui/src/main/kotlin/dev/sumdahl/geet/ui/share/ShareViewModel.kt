@@ -34,7 +34,7 @@ data class ShareState(
     val info: ShareInfo = ShareInfo.Reading,
     val format: String = "opus",
     val job: DownloadJob? = null,
-    val coverColors: Boolean = true,
+    val coverColors: Boolean = true
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -42,7 +42,7 @@ data class ShareState(
 class ShareViewModel @Inject constructor(
     private val engine: Engine,
     private val downloads: DownloadRepository,
-    private val settings: SettingsStore,
+    private val settings: SettingsStore
 ) : ViewModel() {
     private val link = MutableStateFlow<String?>(null)
     private val info = MutableStateFlow<ShareInfo>(ShareInfo.Reading)
@@ -55,7 +55,7 @@ class ShareViewModel @Inject constructor(
         info,
         format,
         jobId.flatMapLatest { id -> id?.let(downloads::job) ?: flowOf(null) },
-        settings.settings,
+        settings.settings
     ) { l, i, f, j, s -> ShareState(l, i, f, j, s.coverColors) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ShareState())
 

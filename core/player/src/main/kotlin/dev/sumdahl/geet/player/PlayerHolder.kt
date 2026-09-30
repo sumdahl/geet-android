@@ -45,7 +45,7 @@ class PlayerHolder @Inject constructor(@ApplicationContext private val context: 
             .setAudioAttributes(
                 AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).build(),
                 // Pause for calls, duck for navigation prompts.
-                true,
+                true
             )
             .setHandleAudioBecomingNoisy(true)
             .setWakeMode(C.WAKE_MODE_LOCAL)
@@ -70,7 +70,18 @@ class PlayerHolder @Inject constructor(@ApplicationContext private val context: 
         if (player.mediaItemCount == 0) return
         val items = (0 until player.mediaItemCount).map { player.getMediaItemAt(it) }
         prefs.edit {
-            putString(KEY_QUEUE, items.joinToString(SEP) { listOf(it.mediaId, it.localConfiguration?.uri, it.mediaMetadata.title, it.mediaMetadata.artist, it.mediaMetadata.albumTitle).joinToString(FIELD) })
+            putString(
+                KEY_QUEUE,
+                items.joinToString(SEP) {
+                    listOf(
+                        it.mediaId,
+                        it.localConfiguration?.uri,
+                        it.mediaMetadata.title,
+                        it.mediaMetadata.artist,
+                        it.mediaMetadata.albumTitle
+                    ).joinToString(FIELD)
+                }
+            )
             putInt(KEY_INDEX, player.currentMediaItemIndex)
             putLong(KEY_POSITION, player.currentPosition)
             putBoolean(KEY_SHUFFLE, player.shuffleModeEnabled)
@@ -115,7 +126,7 @@ class PlayerHolder @Inject constructor(@ApplicationContext private val context: 
                     .setAlbumTitle(song.album)
                     .setIsPlayable(true)
                     .setIsBrowsable(false)
-                    .build(),
+                    .build()
             )
             .build()
 

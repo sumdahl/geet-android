@@ -72,18 +72,26 @@ fun QueueSheet(state: PlayerState, viewModel: PlayerViewModel, onDismiss: () -> 
                             },
                             trailingContent = {
                                 Row {
-                                    IconButton(onClick = { viewModel.remove(i) }) { Icon(Icons.Rounded.Close, contentDescription = "Remove from queue") }
+                                    IconButton(onClick = {
+                                        viewModel.remove(i)
+                                    }) { Icon(Icons.Rounded.Close, contentDescription = "Remove from queue") }
                                     Icon(
                                         Icons.Rounded.DragHandle,
                                         contentDescription = "Reorder",
-                                        modifier = Modifier.draggableHandle().padding(12.dp),
+                                        modifier = Modifier.draggableHandle().padding(12.dp)
                                     )
                                 }
                             },
                             colors = ListItemDefaults.colors(
-                                containerColor = if (i == state.index) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainerLow,
+                                containerColor = if (i ==
+                                    state.index
+                                ) {
+                                    MaterialTheme.colorScheme.secondaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.surfaceContainerLow
+                                }
                             ),
-                            modifier = Modifier.clickable { viewModel.playAt(i) },
+                            modifier = Modifier.clickable { viewModel.playAt(i) }
                         )
                     }
                 }
@@ -107,13 +115,13 @@ fun MiniPlayer(onOpen: () -> Unit, coverColors: Boolean, modifier: Modifier = Mo
             shape = MaterialTheme.shapes.extraLarge,
             color = MaterialTheme.colorScheme.secondaryContainer,
             tonalElevation = 2.dp,
-            modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+            modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Column {
                 Row(
                     Modifier.padding(start = 8.dp, end = 4.dp, top = 8.dp, bottom = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     CoverArt(song.cover, Modifier.size(44.dp), MaterialTheme.shapes.medium)
                     Column(Modifier.weight(1f)) {
@@ -123,13 +131,13 @@ fun MiniPlayer(onOpen: () -> Unit, coverColors: Boolean, modifier: Modifier = Mo
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.75f),
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     IconButton(onClick = viewModel::toggle) {
                         Icon(
                             if (state.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                            contentDescription = if (state.playing) "Pause" else "Play",
+                            contentDescription = if (state.playing) "Pause" else "Play"
                         )
                     }
                     IconButton(onClick = viewModel::next) { Icon(Icons.Rounded.SkipNext, contentDescription = "Next") }
@@ -137,7 +145,7 @@ fun MiniPlayer(onOpen: () -> Unit, coverColors: Boolean, modifier: Modifier = Mo
                 LinearWavyProgressIndicator(
                     progress = { if (state.durationMs > 0) (position.value.toFloat() / state.durationMs).coerceIn(0f, 1f) else 0f },
                     amplitude = { if (state.playing) 1f else 0f },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 8.dp).height(8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 8.dp).height(8.dp)
                 )
             }
         }

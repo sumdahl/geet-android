@@ -13,14 +13,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 /** A saved song, as MediaStore knows it. */
@@ -34,7 +34,7 @@ data class Song(
     val durationMs: Long,
     val addedAt: Long,
     /** The playlist folder it was saved into, or empty for a single song. */
-    val folder: String,
+    val folder: String
 ) {
     val cover get() = SongCover(uri)
 }
@@ -49,7 +49,7 @@ data class SongCover(val uri: Uri)
 @Singleton
 class LibraryRepository @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val settings: SettingsStore,
+    private val settings: SettingsStore
 ) {
     /** Follows the output folder setting: changing it shows that folder's songs. */
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -84,7 +84,7 @@ class LibraryRepository @Inject constructor(
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.RELATIVE_PATH,
+            MediaStore.Audio.Media.RELATIVE_PATH
         )
         val songs = mutableListOf<Song>()
         context.contentResolver.query(
@@ -92,7 +92,7 @@ class LibraryRepository @Inject constructor(
             projection,
             "${MediaStore.Audio.Media.RELATIVE_PATH} LIKE ?",
             arrayOf("$root%"),
-            "${MediaStore.Audio.Media.DATE_ADDED} DESC",
+            "${MediaStore.Audio.Media.DATE_ADDED} DESC"
         )?.use { c ->
             while (c.moveToNext()) {
                 val id = c.getLong(0)
@@ -105,7 +105,7 @@ class LibraryRepository @Inject constructor(
                     album = c.getString(4)?.takeUnless { it == MediaStore.UNKNOWN_STRING }.orEmpty(),
                     durationMs = c.getLong(5),
                     addedAt = c.getLong(6) * 1000,
-                    folder = c.getString(7).orEmpty().removePrefix(root).trim('/'),
+                    folder = c.getString(7).orEmpty().removePrefix(root).trim('/')
                 )
             }
         }

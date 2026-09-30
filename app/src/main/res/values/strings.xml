@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Geet</string>
+    <string name="share_label">Download with Geet</string>
+    <string name="tile_label">Download copied link</string>
+    <string name="shortcut_paste">Download copied link</string>
+    <string name="shortcut_downloads">Downloads</string>
+    <string name="shortcut_library">Library</string>
+</resources>

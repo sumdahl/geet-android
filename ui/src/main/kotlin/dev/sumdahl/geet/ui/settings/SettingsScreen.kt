@@ -80,11 +80,11 @@ fun SettingsScreen(appVersion: String, viewModel: SettingsViewModel = hiltViewMo
 
     Scaffold(
         topBar = { LargeFlexibleTopAppBar(title = { Text("Settings") }, scrollBehavior = scroll) },
-        modifier = Modifier.nestedScroll(scroll.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scroll.nestedScrollConnection)
     ) { padding ->
         LazyColumn(
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = padding.calculateTopPadding(), bottom = 160.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             item {
                 Section("Appearance") {
@@ -98,12 +98,20 @@ fun SettingsScreen(appVersion: String, viewModel: SettingsViewModel = hiltViewMo
                                     Theme.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
                                     else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                                 },
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.weight(1f)
                             ) { Text(if (t == Theme.Amoled) "Black" else t.name) }
                         }
                     }
-                    SwitchRow("Wallpaper colours", "Use your wallpaper's colours (Material You). Off uses Geet's own.", app.wallpaperColors) { on -> viewModel.app { it.copy(wallpaperColors = on) } }
-                    SwitchRow("Cover colours", "Colour the player and share sheet from the song's cover.", app.coverColors) { on -> viewModel.app { it.copy(coverColors = on) } }
+                    SwitchRow(
+                        "Wallpaper colours",
+                        "Use your wallpaper's colours (Material You). Off uses Geet's own.",
+                        app.wallpaperColors
+                    ) { on ->
+                        viewModel.app { it.copy(wallpaperColors = on) }
+                    }
+                    SwitchRow("Cover colours", "Colour the player and share sheet from the song's cover.", app.coverColors) { on ->
+                        viewModel.app { it.copy(coverColors = on) }
+                    }
                 }
             }
             item {
@@ -112,14 +120,28 @@ fun SettingsScreen(appVersion: String, viewModel: SettingsViewModel = hiltViewMo
                     ChoiceRow(
                         "Quality",
                         value("bitrate"),
-                        listOf("" to "Best available", "320k" to "320 kbps", "256k" to "256 kbps", "192k" to "192 kbps", "128k" to "128 kbps"),
+                        listOf(
+                            "" to "Best available",
+                            "320k" to "320 kbps",
+                            "256k" to "256 kbps",
+                            "192k" to "192 kbps",
+                            "128k" to "128 kbps"
+                        )
                     ) { set("bitrate", it.ifEmpty { null }) }
-                    SwitchRow("Lyrics", "Save each song's lyrics with it, synced when available.", value("lyrics") != "false") { set("lyrics", it.toString()) }
-                    SwitchRow("Playlist folders", "Keep each playlist's songs in a folder of its own.", value("playlist_folder") != "false") { set("playlist_folder", it.toString()) }
+                    SwitchRow("Lyrics", "Save each song's lyrics with it, synced when available.", value("lyrics") != "false") {
+                        set("lyrics", it.toString())
+                    }
+                    SwitchRow(
+                        "Playlist folders",
+                        "Keep each playlist's songs in a folder of its own.",
+                        value("playlist_folder") != "false"
+                    ) {
+                        set("playlist_folder", it.toString())
+                    }
                     ChoiceRow(
                         "When a song is already saved",
                         value("duplicates"),
-                        listOf("link" to "Reuse it", "skip" to "Skip it", "download" to "Download again"),
+                        listOf("link" to "Reuse it", "skip" to "Skip it", "download" to "Download again")
                     ) { set("duplicates", it) }
                     val jobs = value("jobs").toIntOrNull() ?: 3
                     ListItem(
@@ -127,19 +149,33 @@ fun SettingsScreen(appVersion: String, viewModel: SettingsViewModel = hiltViewMo
                         supportingContent = {
                             Column {
                                 Text("More is faster, but YouTube may start refusing sooner.")
-                                Slider(value = jobs.toFloat(), onValueChange = { set("jobs", it.toInt().toString()) }, valueRange = 1f..8f, steps = 6)
+                                Slider(value = jobs.toFloat(), onValueChange = {
+                                    set("jobs", it.toInt().toString())
+                                }, valueRange = 1f..8f, steps = 6)
                             }
                         },
-                        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                     )
                 }
             }
             item {
                 Section("Behaviour") {
-                    SwitchRow("Download on share", "Start as soon as a link is shared to Geet, without the preview's button.", app.downloadOnShare) { on -> viewModel.app { it.copy(downloadOnShare = on) } }
-                    SwitchRow("Wi-Fi only", "Wait for Wi-Fi (or another unmetered network) before downloading.", app.unmeteredOnly) { on -> viewModel.app { it.copy(unmeteredOnly = on) } }
-                    SwitchRow("Copied links", "Offer a link you copied when you open Geet.", app.clipboardChip) { on -> viewModel.app { it.copy(clipboardChip = on) } }
-                    TextRow("Search country", "The store searched first, as two letters (US, GB, IN, NP…).", value("search.country")) { set("search.country", it.uppercase().take(2)) }
+                    SwitchRow(
+                        "Download on share",
+                        "Start as soon as a link is shared to Geet, without the preview's button.",
+                        app.downloadOnShare
+                    ) { on ->
+                        viewModel.app { it.copy(downloadOnShare = on) }
+                    }
+                    SwitchRow("Wi-Fi only", "Wait for Wi-Fi (or another unmetered network) before downloading.", app.unmeteredOnly) { on ->
+                        viewModel.app { it.copy(unmeteredOnly = on) }
+                    }
+                    SwitchRow("Copied links", "Offer a link you copied when you open Geet.", app.clipboardChip) { on ->
+                        viewModel.app { it.copy(clipboardChip = on) }
+                    }
+                    TextRow("Search country", "The store searched first, as two letters (US, GB, IN, NP…).", value("search.country")) {
+                        set("search.country", it.uppercase().take(2))
+                    }
                 }
             }
             item {
@@ -149,16 +185,17 @@ fun SettingsScreen(appVersion: String, viewModel: SettingsViewModel = hiltViewMo
                         supportingContent = {
                             Text(
                                 when (val u = update) {
-                                    Task.Idle -> "YouTube changes often; a newer yt-dlp keeps downloads working. Now ${versions?.second.orEmpty()}"
+                                    Task.Idle ->
+                                        "YouTube changes often; a newer yt-dlp keeps downloads working. Now ${versions?.second.orEmpty()}"
                                     Task.Running -> "Updating…"
                                     is Task.Done -> u.message
-                                },
+                                }
                             )
                         },
                         leadingContent = { Icon(Icons.Rounded.SystemUpdateAlt, contentDescription = null) },
                         trailingContent = { if (update == Task.Running) LoadingIndicator(Modifier.size(32.dp)) },
                         colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-                        modifier = Modifier.clickable(enabled = update != Task.Running) { viewModel.updateYtDlp() },
+                        modifier = Modifier.clickable(enabled = update != Task.Running) { viewModel.updateYtDlp() }
                     )
                     ListItem(
                         headlineContent = { Text("Check health") },
@@ -166,7 +203,7 @@ fun SettingsScreen(appVersion: String, viewModel: SettingsViewModel = hiltViewMo
                         leadingContent = { Icon(Icons.Rounded.HealthAndSafety, contentDescription = null) },
                         trailingContent = { if (checking) LoadingIndicator(Modifier.size(32.dp)) },
                         colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-                        modifier = Modifier.clickable(enabled = !checking) { viewModel.checkHealth() },
+                        modifier = Modifier.clickable(enabled = !checking) { viewModel.checkHealth() }
                     )
                 }
             }
@@ -175,7 +212,11 @@ fun SettingsScreen(appVersion: String, viewModel: SettingsViewModel = hiltViewMo
                     SwitchRow("Show every engine setting", "For fine-tuning how songs are matched and saved.", advanced) { advanced = it }
                     AnimatedVisibility(advanced) {
                         Column {
-                            rows.values.filter { it.setting.key !in CURATED }.sortedBy { it.setting.key }.forEach { row -> EngineRow(row, onSet = { v -> viewModel.set(row.setting.env, v) }) }
+                            rows.values.filter {
+                                it.setting.key !in CURATED
+                            }.sortedBy {
+                                it.setting.key
+                            }.forEach { row -> EngineRow(row, onSet = { v -> viewModel.set(row.setting.env, v) }) }
                         }
                     }
                 }
@@ -184,16 +225,29 @@ fun SettingsScreen(appVersion: String, viewModel: SettingsViewModel = hiltViewMo
                 Section("About") {
                     ListItem(
                         headlineContent = { Text("Geet $appVersion") },
-                        supportingContent = { Text(listOfNotNull(versions?.first?.ifBlank { null }, versions?.second?.ifBlank { null }?.let { "yt-dlp $it" }).joinToString(" · ").ifEmpty { "Free and open source · GPL-3.0" }) },
+                        supportingContent = {
+                            Text(
+                                listOfNotNull(
+                                    versions?.first?.ifBlank {
+                                        null
+                                    },
+                                    versions?.second?.ifBlank {
+                                        null
+                                    }?.let { "yt-dlp $it" }
+                                ).joinToString(" · ").ifEmpty { "Free and open source · GPL-3.0" }
+                            )
+                        },
                         leadingContent = { Icon(Icons.Rounded.Info, contentDescription = null) },
-                        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                     )
                     ListItem(
                         headlineContent = { Text("Source code") },
                         supportingContent = { Text("github.com/sumdahl/geet-android") },
                         leadingContent = { Icon(Icons.Rounded.Code, contentDescription = null) },
                         colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-                        modifier = Modifier.clickable { context.startActivity(Intent(Intent.ACTION_VIEW, "https://github.com/sumdahl/geet-android".toUri())) },
+                        modifier = Modifier.clickable {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, "https://github.com/sumdahl/geet-android".toUri()))
+                        }
                     )
                 }
             }
@@ -208,7 +262,12 @@ private val CURATED = setOf("format", "bitrate", "lyrics", "playlist_folder", "d
 @Composable
 private fun Section(title: String, content: @Composable ColumnScope.() -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(title, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(start = 16.dp))
+        Text(
+            title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 16.dp)
+        )
         Surface(shape = MaterialTheme.shapes.extraLarge, color = MaterialTheme.colorScheme.surfaceContainer) {
             Column(content = content)
         }
@@ -222,7 +281,7 @@ private fun SwitchRow(title: String, body: String, checked: Boolean, onChange: (
         supportingContent = { Text(body) },
         trailingContent = { Switch(checked = checked, onCheckedChange = onChange) },
         colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        modifier = Modifier.clickable { onChange(!checked) },
+        modifier = Modifier.clickable { onChange(!checked) }
     )
 }
 
@@ -241,13 +300,13 @@ private fun ChoiceRow(title: String, value: String, choices: List<Pair<String, S
                         onClick = {
                             open = false
                             onChoose(v)
-                        },
+                        }
                     )
                 }
             }
         },
         colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        modifier = Modifier.clickable { open = true },
+        modifier = Modifier.clickable { open = true }
     )
 }
 
@@ -258,7 +317,7 @@ private fun TextRow(title: String, body: String, value: String, keyboard: Keyboa
         headlineContent = { Text(title) },
         supportingContent = { Text(value.ifEmpty { body }) },
         colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        modifier = Modifier.clickable { editing = true },
+        modifier = Modifier.clickable { editing = true }
     )
     if (editing) {
         var text by remember { mutableStateOf(value) }
@@ -268,7 +327,9 @@ private fun TextRow(title: String, body: String, value: String, keyboard: Keyboa
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(body, style = MaterialTheme.typography.bodyMedium)
-                    OutlinedTextField(value = text, onValueChange = { text = it }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = keyboard))
+                    OutlinedTextField(value = text, onValueChange = {
+                        text = it
+                    }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = keyboard))
                 }
             },
             confirmButton = {
@@ -277,7 +338,7 @@ private fun TextRow(title: String, body: String, value: String, keyboard: Keyboa
                     editing = false
                 }) { Text("Save") }
             },
-            dismissButton = { TextButton(onClick = { editing = false }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { editing = false }) { Text("Cancel") } }
         )
     }
 }
@@ -290,7 +351,18 @@ private fun EngineRow(row: SettingRow, onSet: (String?) -> Unit) {
     when {
         s.type == "bool" -> SwitchRow(title, s.usage, row.value == "true") { onSet(it.toString()) }
         s.choices.isNotEmpty() -> ChoiceRow(title, row.value, s.choices.map { it to it }) { onSet(it) }
-        else -> TextRow(title, s.usage, row.value, if (s.type == "int") KeyboardType.Number else KeyboardType.Text) { onSet(it.ifEmpty { null }) }
+        else -> TextRow(
+            title,
+            s.usage,
+            row.value,
+            if (s.type ==
+                "int"
+            ) {
+                KeyboardType.Number
+            } else {
+                KeyboardType.Text
+            }
+        ) { onSet(it.ifEmpty { null }) }
     }
 }
 
@@ -313,18 +385,24 @@ private fun HealthDialog(health: Health, onDismiss: () -> Unit) {
                                 else -> Icons.Rounded.RemoveCircleOutline
                             },
                             contentDescription = c.status,
-                            tint = if (c.status == "fail") MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                            tint = if (c.status == "fail") MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
                         )
                         Column(Modifier.fillMaxWidth()) {
                             Text(c.name, style = MaterialTheme.typography.titleSmall)
                             if (c.detail.isNotBlank()) Text(c.detail, style = MaterialTheme.typography.bodySmall)
-                            if (c.fix.isNotBlank()) Text(c.fix, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                            if (c.fix.isNotBlank()) {
+                                Text(
+                                    c.fix,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                     }
                 }
                 if (health.checks.isEmpty()) item { Text("Geet couldn't run its checks. Try again in a moment.") }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Done") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Done") } }
     )
 }

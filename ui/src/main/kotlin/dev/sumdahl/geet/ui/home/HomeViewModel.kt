@@ -41,7 +41,7 @@ class HomeViewModel @Inject constructor(
     private val downloads: DownloadRepository,
     private val player: PlayerHolder,
     library: LibraryRepository,
-    settings: SettingsStore,
+    settings: SettingsStore
 ) : ViewModel() {
     private val refresh = MutableStateFlow(0)
     val query = MutableStateFlow("")
@@ -54,7 +54,9 @@ class HomeViewModel @Inject constructor(
             .fold({ Load.Ready(it) }, { Load.Failed(it.message ?: "Couldn't read the chart") })
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), Load.Loading)
 
-    val results: StateFlow<Load<List<CatalogResult>>?> = query.map { it.trim() }.distinctUntilChanged().debounce(SEARCH_DELAY_MS).mapLatest { q ->
+    val results: StateFlow<Load<List<CatalogResult>>?> = query.map {
+        it.trim()
+    }.distinctUntilChanged().debounce(SEARCH_DELAY_MS).mapLatest { q ->
         if (q.length < 2) {
             null
         } else {
@@ -100,7 +102,13 @@ class HomeViewModel @Inject constructor(
 }
 
 /** Links Geet can read: Spotify, YouTube and YouTube Music, Apple Music and Deezer. */
-fun isSupportedLink(text: String) =
-    Regex("""https?://(open\.spotify\.com|(www\.|m\.|music\.)?youtube\.com|youtu\.be|music\.apple\.com|(www\.)?deezer\.com|link\.deezer\.com)/\S+""")
-        .containsMatchIn(text)
+fun isSupportedLink(text: String) = supportedLink.containsMatchIn(text)
 
+private val hosts = listOf(
+    """open\.spotify\.com""",
+    """(www\.|m\.|music\.)?youtube\.com""",
+    """youtu\.be""",
+    """music\.apple\.com""",
+    """(www\.|link\.)?deezer\.com"""
+)
+private val supportedLink = Regex("""https?://(${hosts.joinToString("|")})/\S+""")

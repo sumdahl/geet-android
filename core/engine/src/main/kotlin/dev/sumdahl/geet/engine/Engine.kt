@@ -89,7 +89,7 @@ class Engine @Inject constructor(@ApplicationContext private val context: Contex
             "GEET_TOOLS_YT_DLP_ARGS" to File(base, "yt-dlp/yt-dlp").absolutePath,
             "GEET_TOOLS_FFMPEG" to lib("libffmpeg.so"),
             "GEET_TOOLS_FFPROBE" to lib("libffprobe.so"),
-            "GEET_PROGRESS" to "never",
+            "GEET_PROGRESS" to "never"
         ) + settings + ("GEET_YOUTUBE_EXTRA_ARGS" to listOfNotNull(ytDlpArgs, settings["GEET_YOUTUBE_EXTRA_ARGS"]).joinToString(" "))
     }
 
@@ -121,7 +121,10 @@ class Engine @Inject constructor(@ApplicationContext private val context: Contex
             stdout.join()
             val code = runInterruptible(Dispatchers.IO) { process.waitFor() }
             if (code > 1) {
-                val why = synchronized(stderr) { stderr.lastOrNull { it.startsWith("geet: ") }?.removePrefix("geet: ") ?: stderr.joinToString("\n") }
+                val why = synchronized(stderr) {
+                    stderr.lastOrNull { it.startsWith("geet: ") }?.removePrefix("geet: ")
+                        ?: stderr.joinToString("\n")
+                }
                 throw EngineException(code, why.ifBlank { "geet exited with code $code" })
             }
         } finally {
@@ -149,7 +152,7 @@ class Engine @Inject constructor(@ApplicationContext private val context: Contex
 
     suspend fun trending(limit: Int, refresh: Boolean, settings: Map<String, String> = emptyMap()): List<CatalogResult> =
         json.decodeFromString(
-            output(listOfNotNull("trending", "--json", "--limit", limit.toString(), "--refresh".takeIf { refresh }), settings),
+            output(listOfNotNull("trending", "--json", "--limit", limit.toString(), "--refresh".takeIf { refresh }), settings)
         )
 
     /** Finds a saved song's lyrics and writes its .lrc; null when the song has none anywhere. */

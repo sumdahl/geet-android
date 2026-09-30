@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Geet primary (geet_icon_assets/README.txt): behind the logo and the splash icon. -->
+    <color name="ic_launcher_background">#E0457B</color>
+    <color name="splash_background">#FFFBFF</color>
+    <color name="window_background">#FFFBFF</color>
+</resources>

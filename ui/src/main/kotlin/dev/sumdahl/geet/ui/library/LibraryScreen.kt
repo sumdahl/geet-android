@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +27,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -43,7 +43,6 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -141,7 +140,7 @@ fun LibraryScreen(onOpenPlayer: () -> Unit, viewModel: LibraryViewModel = hiltVi
             val result = snackbar.showSnackbar(
                 "Deleted ${if (songs.size == 1) songs.first().title else songs(songs.size)}",
                 actionLabel = "Undo",
-                duration = SnackbarDuration.Short,
+                duration = SnackbarDuration.Short
             )
             if (result == SnackbarResult.ActionPerformed) viewModel.undoDelete()
         }
@@ -152,37 +151,59 @@ fun LibraryScreen(onOpenPlayer: () -> Unit, viewModel: LibraryViewModel = hiltVi
             when {
                 selected.isNotEmpty() -> TopAppBar(
                     title = { Text("${selected.size} selected") },
-                    navigationIcon = { IconButton(onClick = { selected = emptySet() }) { Icon(Icons.Rounded.Close, contentDescription = "Clear selection") } },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            selected = emptySet()
+                        }) { Icon(Icons.Rounded.Close, contentDescription = "Clear selection") }
+                    },
                     actions = {
-                        IconButton(onClick = { viewModel.play(shown.filter { it.id in selected }); selected = emptySet(); onOpenPlayer() }) {
+                        IconButton(onClick = {
+                            viewModel.play(shown.filter { it.id in selected })
+                            selected = emptySet()
+                            onOpenPlayer()
+                        }) {
                             Icon(Icons.Rounded.PlayArrow, contentDescription = "Play selected")
                         }
-                        IconButton(onClick = { delete(shown.filter { it.id in selected }) }) { Icon(Icons.Rounded.Delete, contentDescription = "Delete selected") }
-                    },
+                        IconButton(onClick = {
+                            delete(shown.filter { it.id in selected })
+                        }) { Icon(Icons.Rounded.Delete, contentDescription = "Delete selected") }
+                    }
                 )
                 searching -> TopAppBar(
                     title = {
                         val field = rememberTextFieldState(state.query)
                         LaunchedEffect(field) { snapshotFlow { field.text.toString() }.collect(viewModel::search) }
-                        TextField(state = field, placeholder = { Text("Search your library") }, lineLimits = androidx.compose.foundation.text.input.TextFieldLineLimits.SingleLine, modifier = Modifier.fillMaxWidth())
+                        TextField(state = field, placeholder = {
+                            Text("Search your library")
+                        }, lineLimits = TextFieldLineLimits.SingleLine, modifier = Modifier.fillMaxWidth())
                     },
                     navigationIcon = {
-                        IconButton(onClick = { searching = false; viewModel.search("") }) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Close search") }
-                    },
+                        IconButton(onClick = {
+                            searching = false
+                            viewModel.search("")
+                        }) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Close search") }
+                    }
                 )
                 else -> LargeFlexibleTopAppBar(
                     title = { Text(openGroup?.name ?: "Library") },
                     subtitle = { Text(songs(shown.size)) },
                     navigationIcon = {
-                        if (openGroup != null) IconButton(onClick = { group = null }) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back") }
+                        if (openGroup !=
+                            null
+                        ) {
+                            IconButton(onClick = {
+                                group = null
+                            }) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back") }
+                        }
                     },
                     actions = { IconButton(onClick = { searching = true }) { Icon(Icons.Rounded.Search, contentDescription = "Search") } },
-                    scrollBehavior = scroll,
+                    scrollBehavior = scroll
                 )
             }
         },
         floatingActionButton = {
-            if (shown.isNotEmpty() && selected.isEmpty() && (tab == LibraryTab.Songs || openGroup != null)) {
+            val songList = tab == LibraryTab.Songs || openGroup != null
+            if (shown.isNotEmpty() && selected.isEmpty() && songList) {
                 ExtendedFloatingActionButton(
                     onClick = {
                         haptics.performHapticFeedback(HapticFeedbackType.Confirm)
@@ -192,12 +213,12 @@ fun LibraryScreen(onOpenPlayer: () -> Unit, viewModel: LibraryViewModel = hiltVi
                     icon = { Icon(Icons.Rounded.Shuffle, contentDescription = null) },
                     text = { Text("Shuffle") },
                     expanded = !scroll.state.collapsedFraction.let { it > 0.5f },
-                    modifier = Modifier.padding(bottom = 88.dp),
+                    modifier = Modifier.padding(bottom = 88.dp)
                 )
             }
         },
         snackbarHost = { SnackbarHost(snackbar) },
-        modifier = Modifier.nestedScroll(scroll.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scroll.nestedScrollConnection)
     ) { padding ->
         Column(Modifier.padding(top = padding.calculateTopPadding())) {
             if (openGroup == null && !searching && selected.isEmpty()) {
@@ -208,10 +229,18 @@ fun LibraryScreen(onOpenPlayer: () -> Unit, viewModel: LibraryViewModel = hiltVi
                 }
             }
             val hasAudioPermission = remember {
-                val permission = if (android.os.Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE
+                val permission = if (android.os.Build.VERSION.SDK_INT >=
+                    33
+                ) {
+                    Manifest.permission.READ_MEDIA_AUDIO
+                } else {
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                }
                 ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
             }
-            AnimatedContent(targetState = Triple(tab, openGroup?.name, state.loaded), transitionSpec = { fadeIn() togetherWith fadeOut() }, label = "library") { (t, g, loaded) ->
+            AnimatedContent(targetState = Triple(tab, openGroup?.name, state.loaded), transitionSpec = {
+                fadeIn() togetherWith fadeOut()
+            }, label = "library") { (t, g, loaded) ->
                 when {
                     !loaded -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingIndicator() }
                     state.songs.isEmpty() && state.query.isNotBlank() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -221,21 +250,35 @@ fun LibraryScreen(onOpenPlayer: () -> Unit, viewModel: LibraryViewModel = hiltVi
                     t == LibraryTab.Songs || g != null -> SongList(
                         songs = shown,
                         selected = selected,
-                        onPlay = { i -> viewModel.play(shown, i); onOpenPlayer() },
+                        onPlay = { i ->
+                            viewModel.play(shown, i)
+                            onOpenPlayer()
+                        },
                         onToggleSelect = { song ->
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             selected = if (song.id in selected) selected - song.id else selected + song.id
                         },
                         selecting = selected.isNotEmpty(),
-                        onPlayNext = { viewModel.playNext(it); scope.launch { snackbar.showSnackbar("Playing next: ${it.title}") } },
-                        onAddToQueue = { viewModel.addToQueue(it); scope.launch { snackbar.showSnackbar("Added to queue") } },
+                        onPlayNext = {
+                            viewModel.playNext(it)
+                            scope.launch { snackbar.showSnackbar("Playing next: ${it.title}") }
+                        },
+                        onAddToQueue = {
+                            viewModel.addToQueue(it)
+                            scope.launch { snackbar.showSnackbar("Added to queue") }
+                        },
                         onShare = { song ->
-                            val share = Intent(Intent.ACTION_SEND).setType("audio/*").putExtra(Intent.EXTRA_STREAM, song.uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            val share = Intent(
+                                Intent.ACTION_SEND
+                            ).setType("audio/*").putExtra(Intent.EXTRA_STREAM, song.uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             context.startActivity(Intent.createChooser(share, "Share ${song.title}"))
                         },
-                        onDelete = { delete(listOf(it)) },
+                        onDelete = { delete(listOf(it)) }
                     )
-                    else -> GroupGrid(groups, onOpen = { group = it.name }, onPlay = { viewModel.play(it.songs); onOpenPlayer() })
+                    else -> GroupGrid(groups, onOpen = { group = it.name }, onPlay = {
+                        viewModel.play(it.songs)
+                        onOpenPlayer()
+                    })
                 }
             }
         }
@@ -250,11 +293,19 @@ private fun EmptyLibrary(hasAudioPermission: Boolean) {
             MessageState(
                 icon = Icons.Rounded.LibraryMusic,
                 title = "Your library is empty",
-                body = "Songs you download appear here, with their covers and lyrics, ready to play offline.",
+                body = "Songs you download appear here, with their covers and lyrics, ready to play offline."
             )
             if (!hasAudioPermission) {
                 OutlinedButton(onClick = {
-                    ask.launch(if (android.os.Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE)
+                    ask.launch(
+                        if (android.os.Build.VERSION.SDK_INT >=
+                            33
+                        ) {
+                            Manifest.permission.READ_MEDIA_AUDIO
+                        } else {
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        }
+                    )
                 }) { Text("Show songs saved before") }
             }
         }
@@ -272,7 +323,7 @@ private fun SongList(
     onPlayNext: (Song) -> Unit,
     onAddToQueue: (Song) -> Unit,
     onShare: (Song) -> Unit,
-    onDelete: (Song) -> Unit,
+    onDelete: (Song) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(bottom = 180.dp)) {
         itemsIndexed(songs, key = { _, s -> s.id }, contentType = { _, _ -> "song" }) { i, song ->
@@ -284,37 +335,66 @@ private fun SongList(
                     Text(
                         listOf(song.artist, formatDuration(song.durationMs)).filter(String::isNotBlank).joinToString(" · "),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis
                     )
                 },
                 leadingContent = {
                     Box {
                         CoverArt(song.cover, Modifier.size(52.dp), MaterialTheme.shapes.medium)
                         if (isSelected) {
-                            Icon(Icons.Rounded.CheckCircle, contentDescription = "Selected", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.align(Alignment.Center).size(32.dp))
+                            Icon(
+                                Icons.Rounded.CheckCircle,
+                                contentDescription = "Selected",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.align(Alignment.Center).size(32.dp)
+                            )
                         }
                     }
                 },
                 trailingContent = {
                     if (!selecting) {
                         Box {
-                            IconButton(onClick = { menu = true }) { Icon(Icons.Rounded.MoreVert, contentDescription = "More for ${song.title}") }
+                            IconButton(onClick = {
+                                menu = true
+                            }) { Icon(Icons.Rounded.MoreVert, contentDescription = "More for ${song.title}") }
                             DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                                DropdownMenuItem(text = { Text("Play next") }, leadingIcon = { Icon(Icons.Rounded.QueuePlayNext, null) }, onClick = { menu = false; onPlayNext(song) })
-                                DropdownMenuItem(text = { Text("Add to queue") }, leadingIcon = { Icon(Icons.AutoMirrored.Rounded.PlaylistAdd, null) }, onClick = { menu = false; onAddToQueue(song) })
-                                DropdownMenuItem(text = { Text("Share") }, leadingIcon = { Icon(Icons.Rounded.Share, null) }, onClick = { menu = false; onShare(song) })
-                                DropdownMenuItem(text = { Text("Delete") }, leadingIcon = { Icon(Icons.Rounded.Delete, null) }, onClick = { menu = false; onDelete(song) })
+                                DropdownMenuItem(text = {
+                                    Text("Play next")
+                                }, leadingIcon = { Icon(Icons.Rounded.QueuePlayNext, null) }, onClick = {
+                                    menu =
+                                        false
+                                    onPlayNext(song)
+                                })
+                                DropdownMenuItem(text = {
+                                    Text("Add to queue")
+                                }, leadingIcon = { Icon(Icons.AutoMirrored.Rounded.PlaylistAdd, null) }, onClick = {
+                                    menu =
+                                        false
+                                    onAddToQueue(song)
+                                })
+                                DropdownMenuItem(text = { Text("Share") }, leadingIcon = { Icon(Icons.Rounded.Share, null) }, onClick = {
+                                    menu =
+                                        false
+                                    onShare(song)
+                                })
+                                DropdownMenuItem(text = { Text("Delete") }, leadingIcon = { Icon(Icons.Rounded.Delete, null) }, onClick = {
+                                    menu =
+                                        false
+                                    onDelete(song)
+                                })
                             }
                         }
                     }
                 },
-                colors = ListItemDefaults.colors(containerColor = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface),
+                colors = ListItemDefaults.colors(
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
+                ),
                 modifier = Modifier
                     .animateItem()
                     .combinedClickable(
                         onClick = { if (selecting) onToggleSelect(song) else onPlay(i) },
-                        onLongClick = { onToggleSelect(song) },
-                    ),
+                        onLongClick = { onToggleSelect(song) }
+                    )
             )
         }
     }
@@ -326,7 +406,7 @@ private fun GroupGrid(groups: List<Group>, onOpen: (Group) -> Unit, onPlay: (Gro
         columns = GridCells.Adaptive(160.dp),
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 180.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(groups, key = { it.name }) { g ->
             Card(onClick = { onOpen(g) }, modifier = Modifier.animateItem()) {
@@ -334,12 +414,16 @@ private fun GroupGrid(groups: List<Group>, onOpen: (Group) -> Unit, onPlay: (Gro
                     CoverArt(g.cover, Modifier.fillMaxWidth().aspectRatio(1f), MaterialTheme.shapes.large)
                     androidx.compose.material3.FilledIconButton(
                         onClick = { onPlay(g) },
-                        modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp),
+                        modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp)
                     ) { Icon(Icons.Rounded.PlayArrow, contentDescription = "Play ${g.name}") }
                 }
                 Column(Modifier.padding(12.dp)) {
                     Text(g.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(songs(g.songs.size), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        songs(g.songs.size),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }

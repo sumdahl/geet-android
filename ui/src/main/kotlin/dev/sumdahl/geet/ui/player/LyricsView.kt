@@ -52,7 +52,7 @@ fun LyricsView(state: LyricsState, position: State<Long>, onSeek: (Long) -> Unit
             MessageState(
                 icon = Icons.Rounded.Lyrics,
                 title = "No lyrics for this one",
-                body = "Nobody has shared the words for this song yet. Enjoy the music.",
+                body = "Nobody has shared the words for this song yet. Enjoy the music."
             )
         }
         is LyricsState.Ready -> SyncedLyrics(state.lyrics, position, onSeek, modifier)
@@ -81,9 +81,9 @@ private fun SyncedLyrics(lyrics: Lyrics, position: State<Long>, onSeek: (Long) -
                 drawContent()
                 drawRect(
                     Brush.verticalGradient(0f to Color.Transparent, 0.15f to Color.Black, 0.85f to Color.Black, 1f to Color.Transparent),
-                    blendMode = BlendMode.DstIn,
+                    blendMode = BlendMode.DstIn
                 )
-            },
+            }
     ) {
         itemsIndexed(lyrics.lines, key = { i, _ -> i }) { i, line ->
             val lit = !lyrics.synced || i == current
@@ -94,12 +94,12 @@ private fun SyncedLyrics(lyrics: Lyrics, position: State<Long>, onSeek: (Long) -
                     past -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
                     else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                 },
-                label = "line colour",
+                label = "line colour"
             )
             val scale by animateFloatAsState(
                 if (lit || !lyrics.synced) 1f else 0.92f,
                 spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow),
-                label = "line scale",
+                label = "line scale"
             )
             Text(
                 text = line.text.ifBlank { "♪" },
@@ -113,7 +113,7 @@ private fun SyncedLyrics(lyrics: Lyrics, position: State<Long>, onSeek: (Long) -
                         scaleX = scale
                         scaleY = scale
                         transformOrigin = TransformOrigin(0f, 0.5f)
-                    },
+                    }
             )
         }
     }

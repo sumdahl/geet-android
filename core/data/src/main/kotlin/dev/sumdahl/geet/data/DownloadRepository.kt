@@ -29,7 +29,7 @@ class DownloadRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val dao: DownloadDao,
     private val engine: Engine,
-    private val settings: SettingsStore,
+    private val settings: SettingsStore
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val work = WorkManager.getInstance(context)
@@ -56,7 +56,16 @@ class DownloadRepository @Inject constructor(
     }
 
     private suspend fun describe(id: Long, info: LinkInfo) =
-        dao.describe(id, info.name.ifBlank { info.tracks.firstOrNull()?.title.orEmpty() }, info.kind, info.source, info.coverUrl, info.total)
+        dao.describe(
+            id,
+            info.name.ifBlank {
+                info.tracks.firstOrNull()?.title.orEmpty()
+            },
+            info.kind,
+            info.source,
+            info.coverUrl,
+            info.total
+        )
 
     private suspend fun start(id: Long) {
         val unmetered = settings.settings.first().unmeteredOnly
