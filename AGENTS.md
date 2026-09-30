@@ -39,6 +39,10 @@ compileSdk 37, targetSdk 36, minSdk 31 (Android 12), all in `build-logic` (`Conf
 
 **Conventions:** each screen has one ViewModel exposing `StateFlow`, collected with `collectAsStateWithLifecycle`. DI is Hilt with KSP. AGP 9 builds Kotlin itself, so never apply `org.jetbrains.kotlin.android` and never use kapt.
 
+## Contributing
+
+**`main` is protected** (ruleset "Protect main"): every change goes in through a pull request. Branch, push the branch, open a PR, and let auto-merge squash it once the required `check` job passes (lint, ktlint, detekt, unit tests, and a debug build with the engine inside). A direct push to `main` is refused, and the PR must be up to date with `main`. Push with gh's token: `git -c credential.helper='!gh auth git-credential' push https://github.com/sumdahl/geet-android.git <branch>`.
+
 ## Releasing
 
 Pushing a tag `vX.Y.Z` builds signed per-ABI APKs and publishes a GitHub Release. The signing key lives only in repo secrets (`GEET_KEYSTORE_BASE64`, `GEET_KEYSTORE_PASSWORD`, `GEET_KEY_ALIAS`, `GEET_KEY_PASSWORD`); locally an untracked `keystore.properties` does the same, pointing at the key in `~/.config/geet-android/geet-release.jks` (certificate SHA-256 `AD:4C:34:BE:…:3B:12`). **Losing the key means users can't update in place.** Back it up.
