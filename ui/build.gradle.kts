@@ -11,6 +11,7 @@ dependencies {
     api(projects.core.data)
     api(projects.core.player)
     api(projects.core.designsystem)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
