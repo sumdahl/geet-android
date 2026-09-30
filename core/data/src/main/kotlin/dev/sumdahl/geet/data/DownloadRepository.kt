@@ -48,8 +48,8 @@ class DownloadRepository @Inject constructor(
      * straight away; otherwise the link is read in the background so the row gets its name and cover within a
      * second, long before its turn to download comes.
      */
-    suspend fun enqueue(link: String, info: LinkInfo? = null): Long {
-        val id = dao.insert(DownloadJob(link = link))
+    suspend fun enqueue(link: String, info: LinkInfo? = null, format: String? = null): Long {
+        val id = dao.insert(DownloadJob(link = link, format = format))
         if (info != null) describe(id, info) else scope.launch { runCatching { engine.info(link) }.onSuccess { describe(id, it) } }
         start(id)
         return id

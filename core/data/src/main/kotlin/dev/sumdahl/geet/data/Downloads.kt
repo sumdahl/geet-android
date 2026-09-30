@@ -39,6 +39,8 @@ data class DownloadJob(
     /** spotify, youtube, apple or deezer; empty until read */
     val source: String = "",
     val coverUrl: String? = null,
+    /** This link's own audio format (the share sheet's choice); null follows the format setting. */
+    val format: String? = null,
     val total: Int = 0,
     val state: JobState = JobState.Queued,
     /** While the engine reads a big playlist before downloading: how far it is ("Reading 12 of 50"). */

@@ -46,7 +46,8 @@ class DownloadWorker @AssistedInject constructor(
         var current: String? = null
         var lastNotified = 0L
         try {
-            engine.download(job.link, settings.engineEnvironment()).collect { e ->
+            val env = settings.engineEnvironment() + listOfNotNull(job.format?.let { "GEET_FORMAT" to it })
+            engine.download(job.link, env).collect { e ->
                 job = job.apply(e)
                 val before = dao.track(id, e.index)
                 before.apply(id, e)?.let { track ->
